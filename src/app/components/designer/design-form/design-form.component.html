@@ -1,0 +1,21 @@
+
+<div *ngIf="form" class="design-form">
+        <ng-container *ngFor="let row of (form.items | groupByRow); index as i;">
+
+               <ng-container *ngTemplateOutlet="droppable; context: { itemId: i }"></ng-container>
+               <div class="item-zone">
+                   <app-form-element [element]="col" *ngFor="let col of row"></app-form-element>
+                   <ng-container *ngTemplateOutlet="droppable; context: { itemId: i, itemSide: true }"></ng-container>
+               </div>
+        </ng-container>
+
+        <ng-container *ngTemplateOutlet="droppable; context: { itemId: form.items.length }"></ng-container>
+</div>
+
+
+
+<!--- Droppable zones --->
+
+<ng-template #droppable let-itemId="itemId" let-itemSide="itemSide">
+  <div class="droppable" [ngClass]="['__droptarget_item-' + itemId, (itemSide)?'__droptarget_side':'']" ></div>
+</ng-template>

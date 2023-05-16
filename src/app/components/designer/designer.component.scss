@@ -1,0 +1,29 @@
+
+.main {
+
+  display: flex;
+  flex-direction: row;
+
+  .json-view {
+      width: 30vw;
+      margin-left: 1rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #3f3f3f;
+  }
+
+  .design-pad {
+      width: 70vw;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #3f3f3f;
+  }
+
+   ::ng-deep .bx--tab-content {
+     padding-left: 0;
+   }
+
+
+}

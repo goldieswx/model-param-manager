@@ -1,0 +1,23 @@
+
+
+.subsections {
+
+   ul li {
+      height: 3rem;
+      button {
+          width: 15rem;
+      }
+   }
+
+
+
+}
+.main  {
+  display: flex;
+  flex-direction: row;
+
+  app-design-form {
+     flex-grow: 1;
+  }
+
+}

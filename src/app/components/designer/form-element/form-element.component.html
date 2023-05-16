@@ -1,0 +1,37 @@
+
+<div [ngSwitch]="element.display" >
+
+  <ng-container *ngSwitchCase="'checkbox'">
+      <ibm-checkbox
+        [checked]="element.value" >
+        {{ element.label }}
+      </ibm-checkbox>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'text'">
+    <ibm-label>
+      {{element.label }}
+      <input
+        ibmText
+          [ngModel]="element.value">
+    </ibm-label>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'number'">
+    <ibm-number [label]="element.label" [ngModel]="element.value">
+
+    </ibm-number>
+  </ng-container>
+
+  <ng-container *ngSwitchDefault>
+      <p>
+        Type: {{ element.type }},
+        Key: {{ element.key }},
+        Value: {{ element.value }},
+        Display: {{ element.display }}
+      </p>
+  </ng-container>
+
+</div>
+
+

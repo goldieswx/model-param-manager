@@ -1,0 +1,37 @@
+
+<div *ngIf="key.length" [ngClass]="{ draggable: !isComposite}">
+  <i class="fas"
+     *ngIf="isComposite"
+     (click)="toggleExpand()"
+     [ngClass]="{  'fa-square-minus':  isExpanded, 'fa-square-plus':  !isExpanded}"
+  ></i>
+  {{ key }}
+  <span *ngIf="!isComposite">
+    : [{{ renderedData[0] | json }}]
+  </span>
+</div>
+
+<div *ngIf="key.length && beingDragged" >
+  <i class="fas"
+     *ngIf="isComposite"
+     (click)="toggleExpand()"
+     [ngClass]="{  'fa-square-minus':  isExpanded, 'fa-square-plus':  !isExpanded}"
+  ></i>
+  {{ key }}
+  <span *ngIf="!isComposite">
+    : [{{ renderedData[0] | json }}]
+  </span>
+</div>
+
+
+<ul *ngIf="isExpanded || !key.length || !isComposite">
+    <li *ngFor="let item of renderedData;">
+        <div *ngIf="isComposite">
+              <app-jsonpartial
+                  [parentKey]="((parentKey) ? (parentKey + '.') : '') + key"
+                  [key]="item[0]"
+                  [data]="item[1]">
+              </app-jsonpartial>
+        </div>
+    </li>
+</ul>

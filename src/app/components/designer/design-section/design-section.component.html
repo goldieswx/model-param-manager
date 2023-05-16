@@ -1,0 +1,18 @@
+
+
+<div class="main">
+
+  <div class="subsections">
+      <ul>
+          <li *ngFor="let subsection of subSections;">
+             <button (click)="currentSubsection = subsection"
+               [ibmButton]="(currentSubsection?.name === subsection.name)?'primary':'secondary'" >
+               {{ subsection.name }}</button>
+          </li>
+      </ul>
+  </div>
+
+  <app-design-form [form]="currentSubsection.form"></app-design-form>
+
+
+</div>
