@@ -25,6 +25,7 @@ import {DesignerEventsService} from "./designer-events.service";
 export class DesignerComponent  implements  AfterViewInit {
 
   #events = inject(DesignerEventsService);
+  sideDisplay: any = { tree: true };
 
   ngAfterViewInit() {
 

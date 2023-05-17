@@ -29,3 +29,16 @@ $css--plex: false;
   src: url('plex/woff2/IBMPlexSans-SemiBold.woff2')
   format('woff2');
 }
+
+
+textarea {
+  background: #393939;
+  font-family: courier new;
+  color: #e0d6d6;
+  outline: none;
+  border: solid 1px #8e8e8e;
+  border-width: 1px 0;
+  line-height: 1.5rem;
+  width: 100%;
+  min-height: 10rem;
+}

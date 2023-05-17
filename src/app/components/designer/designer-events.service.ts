@@ -14,6 +14,8 @@ limitations under the License. */
 
 import {inject, Injectable, NgZone} from '@angular/core';
 import {Observable, Subject} from "rxjs";
+import {FormElementComponent} from "./form-element/form-element.component";
+import {FormItem} from "./design-form/form-manager.service";
 
 export interface AppDragEvent {
     type: string;
@@ -35,6 +37,8 @@ export class DesignerEventsService {
   dragEvents$ = new Subject<AppDragEvent>();
   dropEvents$ = new Subject<AppDropEvent>();
 
+  currentFormElement$ = new Subject<FormItem>();
+
   constructor() { }
 
   public pushDragEvent(type: string, event: any) {
@@ -55,6 +59,14 @@ export class DesignerEventsService {
 
   public getDropEvents() : Observable<AppDropEvent> {
     return this.dropEvents$.asObservable();
+  }
+
+  public setCurrentFormElement(form: FormItem) {
+    this.currentFormElement$.next(form);
+  }
+
+  public getCurrentFormElement(): Observable<FormItem> {
+    return this.currentFormElement$.asObservable();
   }
 
 }

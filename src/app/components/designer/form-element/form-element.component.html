@@ -1,5 +1,7 @@
 
-<div [ngSwitch]="element.display" >
+<div [ngSwitch]="element.display" (click)="setCurrentFormElement()" >
+
+  <app-markdown-viewer *ngIf="element.mdHelpText?.length" [model]="element.mdHelpText"></app-markdown-viewer>
 
   <ng-container *ngSwitchCase="'checkbox'">
       <ibm-checkbox
@@ -12,13 +14,19 @@
     <ibm-label>
       {{element.label }}
       <input
-        ibmText
+        ibmText [size]="'sm'"
           [ngModel]="element.value">
     </ibm-label>
   </ng-container>
 
+  <ng-container *ngSwitchCase="'textarea'">
+    <ibm-label>      {{element.label }}
+    <textarea [ngModel]="element.value" ></textarea>
+    </ibm-label>
+  </ng-container>
+
   <ng-container *ngSwitchCase="'number'">
-    <ibm-number [label]="element.label" [ngModel]="element.value">
+    <ibm-number [label]="element.label" [ngModel]="element.value" [size]="'sm'">
 
     </ibm-number>
   </ng-container>

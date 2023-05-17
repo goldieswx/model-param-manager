@@ -1,7 +1,38 @@
 <div class="main">
-  <div class="json-view">
-    <app-jsonview></app-jsonview>
-  </div>
+  <ul data-accordion class="bx--accordion sidebar">
+    <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay.formElementEditor }"
+        >
+      <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane2" (click)="sideDisplay.formElementEditor = !sideDisplay?.formElementEditor">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+             xmlns="http://www.w3.org/2000/svg" class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path></svg>
+        <div class="bx--accordion__title">Form Element Editor</div>
+      </button>
+      <div  class="bx--accordion__content">
+          <div class="form-element-editor">
+            <app-form-element-editor></app-form-element-editor>
+          </div>
+      </div>
+
+    </li>
+    <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay?.tree }">
+      <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane1"  (click)="sideDisplay.tree = !sideDisplay?.tree">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+             xmlns="http://www.w3.org/2000/svg" class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path></svg>
+        <div class="bx--accordion__title">Configuration files</div>
+      </button>
+      <div  >
+          <div class="json-view">
+            <app-jsonview></app-jsonview>
+          </div>
+      </div>
+    </li>
+  </ul>
+
+
+
+
   <div class="design-pad">
 
     <ibm-tabs >

@@ -12,8 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {FormItem} from "../design-form/form-manager.service";
+import {DesignerEventsService} from "../designer-events.service";
 
 @Component({
   selector: 'app-form-element',
@@ -22,6 +23,11 @@ import {FormItem} from "../design-form/form-manager.service";
 })
 export class FormElementComponent {
 
+  #events = inject(DesignerEventsService);
+
     @Input() element : FormItem;
 
+  setCurrentFormElement() {
+        this.#events.setCurrentFormElement(this.element);
+  }
 }

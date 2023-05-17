@@ -23,6 +23,7 @@ export interface FormItem {
     label: string;
     displayRow?: number;
     displayCol?: number;
+    mdHelpText?: string;
 }
 
 

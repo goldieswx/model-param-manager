@@ -18,12 +18,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-  ButtonModule,
-  CheckboxModule,
-  InputModule, NumberModule,
-  PanelModule,
-  TabsModule,
-  UIShellModule
+    ButtonModule,
+    CheckboxModule, DropdownModule,
+    InputModule, NumberModule,
+    PanelModule,
+    TabsModule,
+    UIShellModule
 } from "carbon-components-angular";
 import { JsonviewComponent } from './components/jsonview/jsonview.component';
 import {FormsModule} from "@angular/forms";
@@ -33,6 +33,8 @@ import { DesignSectionComponent } from './components/designer/design-section/des
 import { DesignFormComponent } from './components/designer/design-form/design-form.component';
 import { FormElementComponent } from './components/designer/form-element/form-element.component';
 import { GroupByRowPipe } from './components/designer/group-by-row.pipe';
+import { FormElementEditorComponent } from './components/form-element-editor/form-element-editor.component';
+import { MarkdownViewerComponent } from './components/designer/markdown-viewer/markdown-viewer.component';
 
 @NgModule({
   declarations: [
@@ -43,20 +45,23 @@ import { GroupByRowPipe } from './components/designer/group-by-row.pipe';
     DesignSectionComponent,
     DesignFormComponent,
     FormElementComponent,
-    GroupByRowPipe
+    GroupByRowPipe,
+    FormElementEditorComponent,
+    MarkdownViewerComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    PanelModule,
-    FormsModule,
-    UIShellModule,
-    TabsModule,
-    ButtonModule,
-    CheckboxModule,
-    InputModule,
-    NumberModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        PanelModule,
+        FormsModule,
+        UIShellModule,
+        TabsModule,
+        ButtonModule,
+        CheckboxModule,
+        InputModule,
+        NumberModule,
+        DropdownModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

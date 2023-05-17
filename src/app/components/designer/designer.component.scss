@@ -4,16 +4,13 @@
   display: flex;
   flex-direction: row;
 
-  .json-view {
-      width: 30vw;
-      margin-left: 1rem;
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #3f3f3f;
+
+  .sidebar {
+     flex: 0.3;
   }
 
   .design-pad {
-      width: 70vw;
+      flex: 0.7;
       margin-left: 1rem;
       margin-right: 1rem;
       margin-top: 1rem;
@@ -24,6 +21,13 @@
    ::ng-deep .bx--tab-content {
      padding-left: 0;
    }
+
+  .json-view {
+     margin-bottom: 1rem;
+  }
+
+  .bx--accordion__content { padding-right:  1rem; }
+
 
 
 }
