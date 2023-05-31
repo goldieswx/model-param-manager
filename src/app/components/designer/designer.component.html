@@ -22,9 +22,9 @@
           <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path></svg>
         <div class="bx--accordion__title">Configuration files</div>
       </button>
-      <div  >
-          <div class="json-view">
-            <app-jsonview></app-jsonview>
+      <div>
+          <div class="json-view" *ngFor="let configurationFile of configurationFiles;">
+            <app-configuration-file-editor [config]="configurationFile"></app-configuration-file-editor>
           </div>
       </div>
     </li>
@@ -36,15 +36,19 @@
   <div class="design-pad">
 
     <ibm-tabs >
-      <ibm-tab heading="Global">
-          <app-design-section></app-design-section>
+      <ibm-tab [heading]="section.name" *ngFor="let section of sections;">
+          <app-design-section [section]="section" ></app-design-section>
       </ibm-tab>
-      <ibm-tab heading="Burdening"></ibm-tab>
-      <ibm-tab heading="Composition Matrix"></ibm-tab>
-      <ibm-tab heading="Charging Matrix"></ibm-tab>
     </ibm-tabs>
 
   </div>
+
+
+  <div class="absolute-containers">
+       <app-markdown-viewer></app-markdown-viewer>
+  </div>
+
+
 </div>
 
 

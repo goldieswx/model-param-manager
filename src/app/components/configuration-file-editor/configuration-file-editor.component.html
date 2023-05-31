@@ -1,0 +1,13 @@
+<ng-container *ngIf="config?.machineName">
+  <div>
+      Machine Name: {{ config.machineName }}
+  </div>
+  <div *ngIf="config?.uri">
+      URI: {{ config.uri }}
+  </div>
+
+  <div>
+    <app-jsonview [data]="config.contents"></app-jsonview>
+  </div>
+
+</ng-container>

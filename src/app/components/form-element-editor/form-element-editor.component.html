@@ -1,0 +1,42 @@
+<ng-container *ngIf="formItem">
+
+<div style="display: flex">
+  <div class="key-value">Original Key: <span>{{ formItem.key }}</span>  </div>
+  <button size="sm" [ibmButton]="'primary'">Highlight</button>
+</div>
+
+<ibm-label>
+  Value
+  <input
+  ibmText [size]="'sm'"
+  [(ngModel)]="formItem.value">
+</ibm-label>
+<ibm-label>
+  Label
+  <input
+  ibmText [size]="'sm'"
+  [(ngModel)]="formItem.label">
+</ibm-label>
+
+
+  <ibm-dropdown
+    [label]="'Type'"
+    [placeholder]=""
+    [size]="'sm'" (selected)="setType($event)">
+    <ibm-dropdown-list [items]="availableTypes"></ibm-dropdown-list>
+  </ibm-dropdown>
+
+  <ibm-dropdown
+    [label]="'Display'"
+    [size]="'sm'" (selected)="setDisplay($event)">
+    <ibm-dropdown-list [items]="availableDisplays"></ibm-dropdown-list>
+  </ibm-dropdown>
+
+  <ng-container >
+    <ibm-label>MarkDown Help Text
+      <textarea [(ngModel)]="formItem.mdHelpText" (ngModelChange)="onMarkDownChanged()"></textarea>
+    </ibm-label>
+  </ng-container>
+
+
+</ng-container>

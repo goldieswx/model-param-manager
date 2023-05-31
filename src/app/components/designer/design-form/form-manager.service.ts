@@ -126,5 +126,19 @@ export class FormManagerService {
       }
   }
 
+  public moveItem (item: FormItem,  target: { insertAt: number, useSide: boolean}) {
+
+      item.displayRow = (target.insertAt + 1) - ((target.useSide) ? 0 : 0.5); /* insertAt is zero based. display Row is 1 based. We insert before => -.5*/
+      item.displayCol = (target.useSide) ? 999 : null;
+
+      this._form.items = this.reorderItemsByRowCol(this._form.items);
+  }
+
+  public removeItem (item: FormItem) {
+
+    this._form.items = _.pull(this._form.items, item);
+    this._form.items = this.reorderItemsByRowCol(this._form.items);
+  }
+
 
 }

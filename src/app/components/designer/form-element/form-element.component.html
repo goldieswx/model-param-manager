@@ -1,7 +1,8 @@
 
 <div [ngSwitch]="element.display" (click)="setCurrentFormElement()" >
 
-  <app-markdown-viewer *ngIf="element.mdHelpText?.length" [model]="element.mdHelpText"></app-markdown-viewer>
+  <div class="help" *ngIf="element?.mdHelpText?.length">
+    <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
 
   <ng-container *ngSwitchCase="'checkbox'">
       <ibm-checkbox

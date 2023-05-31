@@ -12,22 +12,52 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import {Component, inject, Input} from '@angular/core';
+import {Component, ElementRef, inject, Input, OnDestroy} from '@angular/core';
 import {FormItem} from "../design-form/form-manager.service";
 import {DesignerEventsService} from "../designer-events.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-form-element',
   templateUrl: './form-element.component.html',
   styleUrls: ['./form-element.component.scss']
 })
-export class FormElementComponent {
+export class FormElementComponent implements OnDestroy {
 
   #events = inject(DesignerEventsService);
+  #elRef = inject(ElementRef);
 
-    @Input() element : FormItem;
+  @Input() element : FormItem;
+  private subs = new Subscription();
+
+  constructor() {
+    this.subs.add(this.#events.getDragEvents().subscribe((e) => {
+
+      if (e.event.relatedTarget) {
+        const targetAppForm = e.event.relatedTarget.closest('app-form-element');
+        if (targetAppForm === this.getRef()) {
+          if (e.type === 'drag-drop') {
+            this.#events.pushDropEvent('drop-reorder', e.event, { element: this.element } );
+          }
+        }
+      }
+
+    }));
+  }
 
   setCurrentFormElement() {
         this.#events.setCurrentFormElement(this.element);
+  }
+
+  showHelp() {
+      this.#events.fireFormAction('showMarkDown', this.element);
+  }
+
+  ngOnDestroy() {
+      this.subs.unsubscribe();
+  }
+
+  private getRef() {
+    return this.#elRef.nativeElement
   }
 }

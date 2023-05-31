@@ -12,7 +12,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import {AfterViewInit, Component, ComponentRef, inject, NgZone, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ComponentRef,
+  inject,
+  Input,
+  NgZone,
+  OnChanges,
+  SimpleChanges,
+  ViewChildren
+} from '@angular/core';
 import {dataMock} from "./mock";
 import * as interact from "interactjs";
 import {JsonpartialComponent} from "./jsonpartial/jsonpartial.component";
@@ -24,12 +34,19 @@ import {DesignerEventsService} from "../designer/designer-events.service";
   templateUrl: './jsonview.component.html',
   styleUrls: ['./jsonview.component.scss']
 })
-export class JsonviewComponent implements  AfterViewInit {
+export class JsonviewComponent implements  AfterViewInit, OnChanges {
 
   #ngZone = inject(NgZone);
   #events = inject(DesignerEventsService);
 
-  public data = dataMock;
+  @Input() data: string;
+  parsedData : any = {};
+
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes && changes['data']?.currentValue) {
+          this.parsedData = JSON.parse(this.data);
+      }
+  }
 
   ngAfterViewInit() {
 
@@ -46,7 +63,6 @@ export class JsonviewComponent implements  AfterViewInit {
           // call this function on every dragend event
           end: (event) =>  {
             this.#events.pushDragEvent('end',event);
-            console.log('drag event done!');
             event.target.style.transform = 'none';
             event.target.style.height = 'auto';
 

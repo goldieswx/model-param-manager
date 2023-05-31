@@ -2,17 +2,28 @@
 
 <div class="main">
 
-  <div class="subsections">
+  <div class="subsections" *ngIf="section">
       <ul>
-          <li *ngFor="let subsection of subSections;">
+          <li *ngFor="let subsection of section.subSections;">
              <button (click)="currentSubsection = subsection"
                [ibmButton]="(currentSubsection?.name === subsection.name)?'primary':'secondary'" >
-               {{ subsection.name }}</button>
+               {{ subsection.name }}
+             </button>
           </li>
       </ul>
+
   </div>
 
-  <app-design-form [form]="currentSubsection.form"></app-design-form>
+  <section class="form" >
+    <div class="subsection-name">
+      <ng-container *ngIf="currentSubsection">
+        <i class="fa fa-solid fa-pencil"></i><input type="text" [(ngModel)]="currentSubsection.name"  />
+      </ng-container>
 
+      <button [ibmButton]="'primary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i>Add</button>
+      <button [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
+    </div>
+    <app-design-form *ngIf="currentSubsection" [form]="currentSubsection.form"></app-design-form>
+  </section>
 
 </div>

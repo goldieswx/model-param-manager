@@ -16,8 +16,28 @@
   display: flex;
   flex-direction: row;
 
-  app-design-form {
+  > .form {
      flex-grow: 1;
+     .subsection-name {
+       i {
+         margin-left: 1rem;
+         margin-right:  .5rem;
+       }
+       input {
+         outline: none;
+         border: none;
+         background: transparent;
+         color: white;
+         margin: .5rem;
+         margin-left: 0;
+         font-size: 15px;
+         border-radius: 0;
+       }
+       button {
+         float: right;
+       }
+
+     }
   }
 
 }

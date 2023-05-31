@@ -13,27 +13,42 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 
-import {Component, inject} from '@angular/core';
-import {Subsection} from "../design-form/design-form.component";
+import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as _ from 'lodash';
 import {FormManagerService} from "../design-form/form-manager.service";
+import {Section, Subsection} from "../designer.service";
+
 
 @Component({
   selector: 'app-design-section',
   templateUrl: './design-section.component.html',
   styleUrls: ['./design-section.component.scss']
 })
-export class DesignSectionComponent {
+export class DesignSectionComponent implements OnChanges {
 
+    @Input() section : Section;
     #formManager = inject(FormManagerService);
 
-    public subSections : Subsection[] = [
-      { name: 'Global parameters', form: this.#formManager.getEmptyDesignForm()},
-      { name: 'External parameters', form: this.#formManager.getEmptyDesignForm()},
-      { name: 'Other parameters', form: this.#formManager.getEmptyDesignForm()},
-      { name: 'Rarely used', form: this.#formManager.getEmptyDesignForm()}
-    ];
+    public currentSubsection : Subsection = null;
 
-    public currentSubsection = _.first(this.subSections);
+    public addSubsection() {
+        this.section.subSections.push({
+            name: 'New subsection',
+            form: this.#formManager.getEmptyDesignForm()
+        })
+    }
+
+    public removeSubsection() {
+        if (this.currentSubsection) {
+          this.section.subSections = _.pull(this.section.subSections, this.currentSubsection);
+        }
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+
+      if (changes && changes['section']?.currentValue) {
+         this.currentSubsection =  _.first(this.section.subSections);
+      }
+    }
 
 }

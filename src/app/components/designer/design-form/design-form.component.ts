@@ -19,10 +19,7 @@ import {Subscription} from "rxjs";
 import {DesignForm, FormManagerService} from "./form-manager.service";
 import * as _ from 'lodash';
 
-export interface Subsection {
-  name: string;
-  form : DesignForm;
-}
+
 
 @Component({
   selector: 'app-design-form',
@@ -51,12 +48,21 @@ export class DesignFormComponent implements OnDestroy, OnInit, OnChanges  {
     this.#formManager.setForm(this.form);
 
     this.subs.add(this.#events.getDropEvents().subscribe((e) => {
+      // check if the events concerns my subsection.
       if (this.getRef().contains(e.event?.target) ) {
         if (e.type === 'drop') {
-             // console.log('tgt',e.event.target.className);
+             // dropped a (json) key into a empty slot
              const targetDisplay = this._getDisplayTarget(e.event.target.classList);
              this.#formManager.addItem( e.dragOriginData.key, e.dragOriginData.data, e.dragOriginData.parentKey, targetDisplay);
+        } else if (e.type === 'drop-reorder') {
+             // reordered a form item into a new slot
+               const targetDisplay = this._getDisplayTarget(e.event.target.classList);
+               this.#formManager.moveItem( e.dragOriginData.element , targetDisplay);
         }
+      } // other events.
+      else if (e.event.target.classList.contains('droppable-remove')) {
+
+          this.#formManager.removeItem( e.dragOriginData.element);
       }
     }));
   }

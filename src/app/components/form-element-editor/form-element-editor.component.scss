@@ -1,0 +1,18 @@
+
+
+:host {
+
+   .key-value {
+       font-weight: bold;
+        flex: 1;
+       line-height: 2rem;
+       span  {
+          font-weight: normal;
+       }
+   }
+
+   textarea {
+      min-height: auto;
+   }
+
+}
