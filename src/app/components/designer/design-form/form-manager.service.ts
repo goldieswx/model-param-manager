@@ -24,6 +24,7 @@ export interface FormItem {
     displayRow?: number;
     displayCol?: number;
     mdHelpText?: string;
+    outputModule ?: string;
 }
 
 
@@ -58,12 +59,19 @@ export class FormManagerService {
         if (_.isString(value)) {
           return 'string';
         }
-        if (Number.isNaN ((new Date(value)).getTime())) {
+        if (_.isBoolean(value)) {
+          return 'boolean';
+        }
+        if (! Number.isNaN ((new Date(value)).getTime())) {
            return 'date';
         }
-        if (_.isBoolean(value)) {
-           return 'boolean';
+        if (_.isArray(value)) {
+          return 'array';
         }
+        if (_.isObject(value)) {
+          return 'object';
+        }
+
 
         return 'string';
   }
@@ -85,7 +93,6 @@ export class FormManagerService {
 
       const orderedItems = _.orderBy(itemsToReorder,['displayRow','displayCol']);
 
-      console.log('reorder', _.cloneDeep(orderedItems));
       let row = 0, col = 0, prevRow: any = null;
       const ret = _.map(orderedItems, (i) => {
 
@@ -98,7 +105,7 @@ export class FormManagerService {
         prevRow = i.displayRow;
         return { ...i, displayRow: row, displayCol: col };
       });
-    console.log('reorder ret', _.cloneDeep(ret));
+
 
     return ret;
   }
@@ -110,19 +117,32 @@ export class FormManagerService {
           const type = this.inferType(value);
           const fullKey = (((parentKey || '').length) ? (parentKey + '.') : '')  + key;
 
-          const newItem = {
+          if (type === 'object') {
+              // recursively add all properties of this object that are not object.
+              _.forOwnRight(value, (v, k) => {
+                   const type = this.inferType(v);
+                   if (type !== 'object') {
+                        this.addItem(k, v, fullKey, { insertAt : target.insertAt, useSide: target.useSide });
+                   }
+              });
+
+          } else {
+
+            const newItem = {
               key: fullKey,
               value: value,
               type: type,
               display: this.inferDisplay(type),
               label: _.capitalize(_.startCase(key)) /* + ' [' + fullKey + ']' */,
-              displayRow : (target.insertAt + 1) - ((target.useSide) ? 0 : 0.5), /* insertAt is zero based. display Row is 1 based. We insert before => -.5*/
-              displayCol : (target.useSide) ? 999 : null
-          };
+              displayRow: (target.insertAt + 1) - ((target.useSide) ? 0 : 0.5), /* insertAt is zero based. display Row is 1 based. We insert before => -.5*/
+              displayCol: (target.useSide) ? 999 : null,
+              outputModule: 'default'
+            };
 
-          this._form.items.push(newItem);
-          this._form.items = this.reorderItemsByRowCol(this._form.items);
+            this._form.items.push(newItem);
+            this._form.items = this.reorderItemsByRowCol(this._form.items);
 
+          }
       }
   }
 

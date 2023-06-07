@@ -1,5 +1,5 @@
 
-<div *ngIf="key.length" [ngClass]="{ draggable: !isComposite}">
+<div *ngIf="key.length" [ngClass]="{ draggable: true, composite: isComposite }">
   <i class="fas"
      *ngIf="isComposite"
      (click)="toggleExpand()"

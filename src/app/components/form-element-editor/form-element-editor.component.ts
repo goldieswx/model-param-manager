@@ -16,6 +16,8 @@ import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {DesignerEventsService} from "../designer/designer-events.service";
 import {FormItem} from "../designer/design-form/form-manager.service";
+import {OutputModule, OutputModuleService} from "../output-module/output-module.service";
+import {ListItem} from "carbon-components-angular";
 
 @Component({
   selector: 'app-form-element-editor',
@@ -25,9 +27,11 @@ import {FormItem} from "../designer/design-form/form-manager.service";
 export class FormElementEditorComponent implements  OnDestroy, OnInit {
 
     #events = inject(DesignerEventsService);
+    #outputModules = inject(OutputModuleService);
     private subs = new Subscription();
 
     formItem : FormItem = null;
+    private _modules : OutputModule[] = this.#outputModules.getOutputModules();
 
     readonly availableTypes : any = [
           { content: 'String', key: 'string' },
@@ -35,7 +39,7 @@ export class FormElementEditorComponent implements  OnDestroy, OnInit {
           { content: 'Boolean', key: 'boolean' },
           { content: 'Date', key: 'date' } ];
 
-      readonly availableDisplays : any = [
+    readonly availableDisplays : any = [
         { content: 'Checkbox', key: 'checkbox' },
         { content: 'Text', key: 'text' },
         { content: 'Number', key: 'number' },
@@ -45,20 +49,24 @@ export class FormElementEditorComponent implements  OnDestroy, OnInit {
         { content: 'Datepicker', key: 'datepicker' },
         { content: 'Timepicker', key: 'timepicker' }];
 
-
+    outputModules : ListItem [] = [];
 
     ngOnInit() {
         this.subs.add(this.#events.getCurrentFormElement().subscribe((form : FormItem) => {
               this.formItem = form;
+              this.outputModules = this._modules.map((m) => ({ content:  m.name, key: m.name, selected: m.name === this.formItem?.outputModule }));
+        }));
+
+        this.subs.add(this.#outputModules.getOnOutputModulesChanged().subscribe(modules => {
+              this.outputModules = modules.map((m) => ({ content:  m.name, key: m.name, selected: m.name === this.formItem?.outputModule }));
         }));
     }
 
 
+
   ngOnDestroy() {
-
       this.subs.unsubscribe();
-
-    }
+  }
 
   setType(e: any) {
        this.formItem.type = e?.item?.key;
@@ -70,5 +78,9 @@ export class FormElementEditorComponent implements  OnDestroy, OnInit {
 
   onMarkDownChanged() {
     this.#events.fireFormAction('markDownUpdate', this.formItem);
+  }
+
+  setOutputModule(e: any) {
+    this.formItem.outputModule = e?.item?.key;
   }
 }

@@ -2,7 +2,7 @@
 
 <div style="display: flex">
   <div class="key-value">Original Key: <span>{{ formItem.key }}</span>  </div>
-  <button size="sm" [ibmButton]="'primary'">Highlight</button>
+  <button size="sm" class="highlight" [ibmButton]="'primary'">Highlight</button>
 </div>
 
 <ibm-label>
@@ -38,5 +38,10 @@
     </ibm-label>
   </ng-container>
 
+  <ibm-dropdown
+    [label]="'Output Module'"
+    [size]="'sm'" (selected)="setOutputModule($event)">
+    <ibm-dropdown-list [items]="outputModules"></ibm-dropdown-list>
+  </ibm-dropdown>
 
 </ng-container>

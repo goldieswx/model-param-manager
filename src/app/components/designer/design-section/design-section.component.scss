@@ -19,6 +19,9 @@
   > .form {
      flex-grow: 1;
      .subsection-name {
+
+       position: relative;
+
        i {
          margin-left: 1rem;
          margin-right:  .5rem;
@@ -33,8 +36,15 @@
          font-size: 15px;
          border-radius: 0;
        }
-       button {
-         float: right;
+
+       .add-remove-subsection {
+         top: 0;
+         right: 0;
+         position: absolute;
+
+         button {
+           padding: 0 1rem;
+         }
        }
 
      }

@@ -13,29 +13,30 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import {Component, inject, Input} from '@angular/core';
-import {ConfigurationFile, ConfigurationFileService} from "../configuration-file.service";
-
+import {OutputModule, OutputModuleService} from "./output-module.service";
 
 @Component({
-  selector: 'app-configuration-file-editor',
-  templateUrl: './configuration-file-editor.component.html',
-  styleUrls: ['./configuration-file-editor.component.scss']
+  selector: 'app-output-module',
+  templateUrl: './output-module.component.html',
+  styleUrls: ['./output-module.component.scss']
 })
-export class ConfigurationFileEditorComponent {
+export class OutputModuleComponent {
 
-  @Input() config : ConfigurationFile;
+   #outputModule = inject(OutputModuleService);
+
+   @Input() module: OutputModule;
+   readonly httpActions : any = [
+    { content: 'POST', key: 'post' },
+    { content: 'PUT', key: 'put' },
+    { content: 'GET', key: 'get' } ];
 
 
-  #configService = inject(ConfigurationFileService);
-
-  getConfigFile(config: ConfigurationFile) {
-      this.#configService.getFileContents(config.uri).subscribe((t) => config.contents = t );
+  update() {
+      this.#outputModule.setModules();
   }
 
-  deleteConfigFile(config: ConfigurationFile) {
-      this.#configService.removeConfigFile(config);
+  send(module: OutputModule) {
+      this.#outputModule.getOutputModuleData(module.name);
   }
-
-
 
 }

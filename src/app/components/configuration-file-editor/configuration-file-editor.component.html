@@ -1,13 +1,37 @@
 <ng-container *ngIf="config?.machineName">
-  <div>
-      Machine Name: {{ config.machineName }}
-  </div>
-  <div *ngIf="config?.uri">
-      URI: {{ config.uri }}
-  </div>
+  <div style="display: flex; flex-direction: row;">
+    <div class="machine-name">
+      <ibm-label> Machine Name
+        <input ibmText size="sm" [(ngModel)]="config.machineName " [disabled]="!!config.contents" placeholder="http://" >
+      </ibm-label>
+    </div>
 
-  <div>
-    <app-jsonview [data]="config.contents"></app-jsonview>
+    <div class="config-uri-edit" >
+      <ibm-label>
+        Url
+        <input  ibmText size="sm" [(ngModel)]="config.uri" [disabled]="!!config.contents" placeholder="http://" >
+
+      </ibm-label>
+    </div>
+    <div class="fetch-button">
+       <!-- <button ibmButton="primary" size="sm" [disabled]="!!config.contents" (click)="getConfigFile(config)">Get</button> -->
+
+      <ibm-overflow-menu
+        [placement]="'bottom'"
+        [flip]="false" >
+        <ibm-overflow-menu-option [innerClass]="'bx--overflow-menu-options__option--danger'"
+                                  [disabled]="!!config.contents" (click)="getConfigFile(config)"
+        >Get</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option [disabled]="!!config.contents" >Paste contents</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" (click)="deleteConfigFile(config)">Delete</ibm-overflow-menu-option>
+      </ibm-overflow-menu>
+
+    </div>
   </div>
+  <section>
+    <app-jsonview [data]="config.contents"></app-jsonview>
+  </section>
 
 </ng-container>
+
+

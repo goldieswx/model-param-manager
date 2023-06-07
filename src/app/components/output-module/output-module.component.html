@@ -1,0 +1,41 @@
+<div *ngIf="module">
+
+  <div style="display: flex; flex-direction: row;">
+    <div class="machine-name">
+      <ibm-label> Module Name
+        <input ibmText size="sm" [(ngModel)]="module.name" (ngModelChange)="update()" [disabled]="module.name==='default'">
+      </ibm-label>
+    </div>
+
+    <div class="config-uri-edit" >
+      <ibm-label>
+        Url
+        <input  ibmText size="sm" [(ngModel)]="module.uri" (ngModelChange)="update()" placeholder="http://" >
+
+      </ibm-label>
+
+
+      <div style="margin-top: .5rem;">
+      <ibm-dropdown
+                    [size]="'sm'" >
+        <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
+      </ibm-dropdown>
+      </div>
+
+    </div>
+
+    <div class="fetch-button">
+      <!-- <button ibmButton="primary" size="sm" [disabled]="!!config.contents" (click)="getConfigFile(config)">Get</button> -->
+
+      <ibm-overflow-menu
+        [placement]="'bottom'"
+        [flip]="false" >
+        <ibm-overflow-menu-option (click)="send(module)" >Send</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" [disabled]="module.name === 'default'" >Delete</ibm-overflow-menu-option>
+      </ibm-overflow-menu>
+
+    </div>
+
+  </div>
+
+</div>

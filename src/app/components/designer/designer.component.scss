@@ -16,6 +16,17 @@
       margin-top: 1rem;
       padding: 1rem;
       background: #3f3f3f;
+      position: relative;
+
+      .add-remove-section {
+          top: 1.5rem;
+          right: 2rem;
+          position: absolute;
+
+          button {
+            padding: 0 1rem;
+          }
+      }
   }
 
    ::ng-deep .bx--tab-content {
@@ -24,10 +35,19 @@
 
   .json-view {
      margin-bottom: 1rem;
+     margin-right: -1rem; /* remove accordion margins */
+     margin-left: -1rem;
   }
 
-  .bx--accordion__content { padding-right:  1rem; }
+  .bx--accordion__content { padding:0; padding-left: 1rem; }
 
+  div.plus {
+    padding: .5rem;
+    padding-top: 0;
+    margin-left: calc(50% - 1rem);
+    font-size:  17px;
+    cursor: pointer;
+  }
 
 
 }

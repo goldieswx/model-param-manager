@@ -1,7 +1,6 @@
 <div class="main">
   <ul data-accordion class="bx--accordion sidebar">
-    <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay.formElementEditor }"
-        >
+    <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay.formElementEditor }">
       <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane2" (click)="sideDisplay.formElementEditor = !sideDisplay?.formElementEditor">
         <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
              xmlns="http://www.w3.org/2000/svg" class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -22,24 +21,49 @@
           <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path></svg>
         <div class="bx--accordion__title">Configuration files</div>
       </button>
-      <div>
+      <div class="bx--accordion__content">
           <div class="json-view" *ngFor="let configurationFile of configurationFiles;">
             <app-configuration-file-editor [config]="configurationFile"></app-configuration-file-editor>
           </div>
+          <div class="plus" >
+            <i (click)="addConfigurationFile()" class="fa-solid fa-circle-plus"></i>
+          </div>
       </div>
     </li>
+
+    <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay?.outputModules }">
+      <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane1"  (click)="sideDisplay.outputModules = !sideDisplay?.outputModules">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+             xmlns="http://www.w3.org/2000/svg" class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path></svg>
+        <div class="bx--accordion__title">Output Modules</div>
+      </button>
+      <div class="bx--accordion__content">
+        <div class="json-view" *ngFor="let outputModule of outputModules;">
+            <app-output-module [module]="outputModule"></app-output-module>
+        </div>
+        <div class="plus" >
+          <i (click)="addOutputModule()" class="fa-solid fa-circle-plus"></i>
+        </div>
+      </div>
+    </li>
+
   </ul>
 
 
 
 
-  <div class="design-pad">
+  <div class="design-pad" >
 
-    <ibm-tabs >
-      <ibm-tab [heading]="section.name" *ngFor="let section of sections;">
+    <ibm-tabs (mousemove)="showManageButtons($event)" (mouseleave)="hideManageButtons()"  >
+      <ibm-tab [heading]="section.name" *ngFor="let section of sections;" (selected)="onSectionSelect(section)">
           <app-design-section [section]="section" ></app-design-section>
       </ibm-tab>
     </ibm-tabs>
+    <div class="add-remove-section" *ngIf="manageButtonsShown" (mouseenter)="showManageButtons(null)" >
+        <button [ibmButton]="'danger'" class="droppable-remove" size="sm" *ngIf="sections.length > 1" (click)="removeCurrentSection()">Remove</button>
+        <button [ibmButton]="'primary'" size="sm" (click)="addSection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
+    </div>
 
   </div>
 

@@ -14,6 +14,8 @@ limitations under the License. */
 
 import { Injectable} from '@angular/core';
 import {DesignForm} from "./design-form/form-manager.service";
+import * as _ from 'lodash';
+
 
 export interface Subsection {
   name: string;
@@ -38,13 +40,19 @@ export class DesignerService {
        this.addSection('Global');
   }
 
-
   addSection(name: string) {
       this.sections.push({ name: name, subSections: [] });
   }
 
   getSections() : Section[] {
       return this.sections;
+  }
+
+  removeSection(section: Section) {
+      const sectionIndex = this.sections.indexOf(section);
+      if (sectionIndex >= 0) {
+        this.sections.splice(sectionIndex);
+      }
   }
 
 }

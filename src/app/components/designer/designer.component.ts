@@ -16,11 +16,10 @@ limitations under the License. */
 import {AfterViewInit, Component, inject, OnDestroy, ViewChild} from '@angular/core';
 import * as interact from "interactjs";
 import {DesignerEventsService, FormAction} from "./designer-events.service";
-import {FormItem} from "./design-form/form-manager.service";
 import {Subscription} from "rxjs";
-import {MarkdownViewerComponent} from "./markdown-viewer/markdown-viewer.component";
-import {DesignerService} from "./designer.service";
+import {DesignerService, Section} from "./designer.service";
 import {ConfigurationFile, ConfigurationFileService} from "../configuration-file.service";
+import {OutputModule, OutputModuleService} from "../output-module/output-module.service";
 
 @Component({
   selector: 'app-designer',
@@ -32,6 +31,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   #events = inject(DesignerEventsService);
   #designer = inject(DesignerService);
   #configFiles = inject(ConfigurationFileService);
+  #outputModules = inject(OutputModuleService);
 
   sideDisplay: any = { tree: true };
 
@@ -39,14 +39,62 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
   private subs = new Subscription();
   configurationFiles: ConfigurationFile[] = [];
+  outputModules: OutputModule[] = [];
+  currentSection: Section = null;
+
+  manageButtonsShown = false;
+  manageButtonsTimeout = 0;
+
+
 
   constructor() {
       this.configurationFiles = this.#configFiles.getConfigurationFiles();
+      this.outputModules = this.#outputModules.getOutputModules();
   }
 
 
   ngOnDestroy() {
       this.subs.unsubscribe();
+  }
+
+  addConfigurationFile() {
+     this.#configFiles.addConfigurationFile();
+  }
+
+  addOutputModule() {
+     this.#outputModules.addOutputModule();
+  }
+
+  showManageButtons(e: any) {
+    if (e && e.clientY >= 125) {
+       // show only buttons where mouse is within the header (no easy dom access to those elements)
+       this.hideManageButtons();
+       return;
+    }
+    if (this.manageButtonsTimeout) {
+      clearTimeout(this.manageButtonsTimeout);
+      this.manageButtonsTimeout = 0;
+    }
+    this.manageButtonsShown = true;
+  }
+
+  hideManageButtons() {
+      if (this.manageButtonsTimeout) {
+          clearTimeout(this.manageButtonsTimeout);
+      }
+      this.manageButtonsTimeout = setTimeout(() => this.manageButtonsShown = false,250);
+  }
+
+  addSection() {
+      this.#designer.addSection('New Section');
+  }
+
+  removeCurrentSection() {
+      this.#designer.removeSection(this.currentSection)
+  }
+
+  onSectionSelect(currentSection: Section) {
+      this.currentSection = currentSection;
   }
 
   ngAfterViewInit() {
@@ -135,5 +183,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
     target.setAttribute('data-x', x)
     target.setAttribute('data-y', y)
   }
+
+
 
 }

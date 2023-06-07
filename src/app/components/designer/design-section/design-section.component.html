@@ -20,8 +20,10 @@
         <i class="fa fa-solid fa-pencil"></i><input type="text" [(ngModel)]="currentSubsection.name"  />
       </ng-container>
 
-      <button [ibmButton]="'primary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i>Add</button>
-      <button [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
+      <div class="add-remove-subsection">
+          <button [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
+          <button [ibmButton]="'primary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i>Add Subsection</button>
+      </div>
     </div>
     <app-design-form *ngIf="currentSubsection" [form]="currentSubsection.form"></app-design-form>
   </section>
