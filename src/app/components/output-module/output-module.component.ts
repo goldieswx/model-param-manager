@@ -36,10 +36,14 @@ export class OutputModuleComponent {
   }
 
   send(module: OutputModule) {
-      this.#outputModule.getOutputModuleData(module.name);
+      this.#outputModule.getOutputModuleData(module);
   }
 
   delete(module: OutputModule) {
        this.#outputModule.deleteModule(module);
+  }
+
+  read(module: OutputModule) {
+      this.#outputModule.readFromOutputModuleData(module);
   }
 }

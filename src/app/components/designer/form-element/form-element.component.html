@@ -6,7 +6,7 @@
   <div class="help" *ngIf="element?.mdHelpText?.length">
     <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
 </div>
-
+ {{ element.key }}
 <div [ngSwitch]="element.display" (click)="setCurrentFormElement()" *ngIf="element?.display" class="form" >
 
   <div class="help" *ngIf="element?.mdHelpText?.length">
@@ -14,7 +14,7 @@
 
   <ng-container *ngSwitchCase="'checkbox'">
       <ibm-checkbox
-        [checked]="element.value" >
+        [(checked)]="element.value" >
         {{ element.label }}
       </ibm-checkbox>
   </ng-container>
@@ -24,18 +24,18 @@
       {{element.label }}
       <input
         ibmText [size]="'sm'"
-          [ngModel]="element.value">
+          [(ngModel)]="element.value">
     </ibm-label>
   </ng-container>
 
   <ng-container *ngSwitchCase="'textarea'">
     <ibm-label>      {{element.label }}
-    <textarea [ngModel]="element.value" ></textarea>
+    <textarea [(ngModel)]="element.value" ></textarea>
     </ibm-label>
   </ng-container>
 
   <ng-container *ngSwitchCase="'number'">
-    <ibm-number [label]="element.label" [ngModel]="element.value" [size]="'sm'">
+    <ibm-number [label]="element.label" [(ngModel)]="element.value" [size]="'sm'">
 
     </ibm-number>
   </ng-container>

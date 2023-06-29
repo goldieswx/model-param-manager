@@ -50,7 +50,11 @@
       <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
     </ibm-dropdown>
 
-    <div class="spacer fetch-button"></div>
+    <ibm-overflow-menu
+      [placement]="'bottom'"
+      [flip]="false" >
+      <ibm-overflow-menu-option (click)="read(module)" >Get</ibm-overflow-menu-option>
+    </ibm-overflow-menu>
   </div>
 
 </div>

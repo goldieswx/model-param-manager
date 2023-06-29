@@ -17,6 +17,7 @@ import {inject, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {DesignerService, Section} from "./designer.service";
 import * as _ from 'lodash';
+import {HttpClient} from "@angular/common/http";
 
 export interface OutputModule {
       name: string;
@@ -42,7 +43,7 @@ export class OutputModuleService {
 
   #designer = inject(DesignerService);
 
-  constructor() {
+  constructor(private http: HttpClient) {
 
       const storedModules: OutputModule[] = JSON.parse(localStorage.getItem('output-modules') ) || [{
         name: 'default',
@@ -86,7 +87,7 @@ export class OutputModuleService {
 
   }
 
-  public getOutputModuleData(moduleName: string): OutputProcessedData {
+  public getOutputModuleData(module: OutputModule): OutputProcessedData {
           const sections : Section[]= this.#designer.getSections();
 
           const result = {} as any;
@@ -94,7 +95,7 @@ export class OutputModuleService {
           _.each(sections || [],(section) => {
               _.each(section.subSections || [], (subSection) => {
                     _.each(subSection?.form?.items || [], (formItem) => {
-                         if (formItem.outputModule === moduleName) {
+                         if (formItem.outputModule === module.name) {
                            if (formItem.key) {
                              _.set(result, formItem.key, formItem.value);
                            }
@@ -105,9 +106,54 @@ export class OutputModuleService {
 
           console.log('processed result', result);
 
+          this.http.post(module.persistUri, result).subscribe((data) => {
+              console.log('posted ', data);
+          });
+
           return {
               result
           };
+  }
+
+  private _keysDeep(obj: any, keys : string[], parentKey : string = '') {
+
+       _.forOwn(obj,(v,k) => {
+            if (_.isObjectLike(v)) {
+               this._keysDeep(v, keys, k);
+            } else {
+               keys.push(_.compact([parentKey, k]).join('.'));
+            }
+       });
+
+  }
+
+  public readFromOutputModuleData(module: OutputModule) {
+        this.http.get(module.retrieveUri).subscribe((data) => {
+              const allKeys : string[] = [];
+              this._keysDeep(data, allKeys);
+
+              const sections : Section[]= this.#designer.getSections();
+
+              console.log('all keys', allKeys);
+
+              _.each(sections || [],(section) => {
+                _.each(section.subSections || [], (subSection) => {
+                  _.each(subSection?.form?.items || [], (formItem) => {
+                    if (formItem.outputModule === module.name) {
+                      if (formItem.key) {
+                        if (_.indexOf(allKeys,formItem.key) >= 0) {
+                             console.log('setting key', formItem.key, 'to value', formItem.value);
+                            formItem.value = _.get(data, formItem.key);
+                        } else {
+                             console.log('ignoring key', formItem.key);
+                        }
+                      }
+                    }
+                  });
+                });
+              });
+
+        });
   }
 
 
