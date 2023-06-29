@@ -27,7 +27,9 @@ import {dataMock} from "./mock";
 import * as interact from "interactjs";
 import {JsonpartialComponent} from "./jsonpartial/jsonpartial.component";
 import * as _ from 'lodash';
-import {DesignerEventsService} from "../designer/designer-events.service";
+import {DesignerEventsService} from "../../services/designer-events.service";
+import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
+import {ConfigurationFileBindingService} from "../../services/configuration-file-binding.service";
 
 @Component({
   selector: 'app-jsonview',
@@ -38,8 +40,11 @@ export class JsonviewComponent implements  AfterViewInit, OnChanges {
 
   #ngZone = inject(NgZone);
   #events = inject(DesignerEventsService);
+  #configBinding = inject(ConfigurationFileBindingService);
 
   @Input() data: string;
+  @Input() configFile: ConfigurationFile;
+
   parsedData : any = {};
 
   ngOnChanges(changes: SimpleChanges) {

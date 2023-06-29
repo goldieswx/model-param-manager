@@ -1,0 +1,33 @@
+{
+
+  "backend_url": "http://10.123.100.10:5010/",
+
+  "assets_url": "./assets/",
+
+  "default_theme": "g90",
+
+  "viscositiesArray": ["OpticalBasicity", "Iida", "Forsbacka"],
+
+  "repartitionArray": ["Taniguchi", "Shankar", "Young", "Sommerville"],
+
+  "availableLanguages": ["en_GB", "tr_TR"],
+
+  "startupRange": {
+
+    "from": "2023-01-13T17:19:00.8332169",
+
+    "to": "2023-01-19T17:19:00.8332169"
+
+  },
+
+  "maxXTicksLimits": 10,
+
+  "castsChartOptions": {
+
+    "yMin": 0.5,
+
+    "yMax": 1.1
+
+  }
+
+}

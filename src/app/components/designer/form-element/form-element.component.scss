@@ -8,9 +8,32 @@
      margin-right: 1rem;
    }
 
+  .form {
    .help {
        float: right;
        cursor: pointer;
    }
+   }
+
+  .tool {
+      position: relative;
+
+      .help {
+        position: absolute;
+        top: 0;
+        right: 0;
+        cursor: pointer;
+      }
+      label {
+        border-top: 1px solid rgb(83 83 83);
+        padding-top: 1rem;
+      }
+
+
+      input[type=text] {
+        width: 100%;  border: none; outline: none !important; background: transparent; color: white; font-size: 20px;
+      }
+
+  }
 
 }

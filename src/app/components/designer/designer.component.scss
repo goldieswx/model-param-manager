@@ -17,16 +17,28 @@
       padding: 1rem;
       background: #3f3f3f;
       position: relative;
+      display: flex;
+      flex-direction: column;
 
       .add-remove-section {
-          top: 1.5rem;
-          right: 2rem;
-          position: absolute;
+          top: 1rem;
+          right: 1rem;
 
           button {
             padding: 0 1rem;
           }
       }
+
+      input.editable {
+        background: transparent;
+        border: none;
+        padding: 0 0.5rem;
+        outline: none !important;
+        width: 100%;
+      }
+
+      a.bx--tabs__nav-link:focus, a.bx--tabs__nav-link:active { outline: none !important; }
+
   }
 
    ::ng-deep .bx--tab-content {
@@ -40,6 +52,21 @@
   }
 
   .bx--accordion__content { padding:0; padding-left: 1rem; }
+
+  li.bx--tabs__nav-item {
+      height: 2.5rem;
+      min-width: 9rem;
+  }
+
+  ul {
+     width: calc(100% - 11rem);
+  }
+
+
+  a.bx--tabs__nav-link {
+    width: auto !important;
+    padding: 0.25rem 0.5rem;
+  }
 
   div.plus {
     padding: .5rem;

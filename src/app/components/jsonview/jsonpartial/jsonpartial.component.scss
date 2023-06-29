@@ -1,14 +1,50 @@
-
-li {
+:host {
+  li {
     margin-left: 2rem;
     line-height: 1.05rem;
-}
+  }
 
 
-i.fas {
-  cursor: pointer;
-}
+  i.fas {
+    cursor: pointer;
+  }
 
-.draggable {
- /* background: blue;*/
+  .draggable {
+    /* background: blue;*/
+  }
+
+
+  .element {
+
+
+      display: flex;
+
+      &.bound {
+            color: #888;
+      }
+      .property-key {
+         flex: 1;
+         margin-left: .25rem;
+      }
+    .property-value {
+      margin-right: 1rem;
+      width: 4rem;
+      /* font-family: courier new; */
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+        &.string {
+            color: #c56493;
+        }
+        &.number {
+          color: #9476d0;
+        }
+        &.boolean {
+          color: #ffb84e;
+
+        }
+    }
+
+  }
+
 }

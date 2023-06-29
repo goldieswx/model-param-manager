@@ -2,14 +2,16 @@
   <div style="display: flex; flex-direction: row;">
     <div class="machine-name">
       <ibm-label> Machine Name
-        <input ibmText size="sm" [(ngModel)]="config.machineName " [disabled]="!!config.contents" placeholder="http://" >
+        <input ibmText size="sm" [(ngModel)]="config.machineName " (ngModelChange)="updateFiles()" [disabled]="!!config.contents" placeholder="http://" >
       </ibm-label>
     </div>
 
     <div class="config-uri-edit" >
       <ibm-label>
         Url
-        <input  ibmText size="sm" [(ngModel)]="config.uri" [disabled]="!!config.contents" placeholder="http://" >
+        <input  ibmText size="sm" [(ngModel)]="config.uri"
+                (ngModelChange)="updateFiles()"
+                [disabled]="!!config.contents" placeholder="http://" >
 
       </ibm-label>
     </div>
@@ -29,7 +31,7 @@
     </div>
   </div>
   <section>
-    <app-jsonview [data]="config.contents"></app-jsonview>
+    <app-jsonview [data]="config.contents" [configFile]="this.config"></app-jsonview>
   </section>
 
 </ng-container>

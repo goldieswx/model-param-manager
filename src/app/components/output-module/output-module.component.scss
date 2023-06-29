@@ -8,7 +8,7 @@
   .machine-name {
     margin-right: 1rem;
     line-height: 2rem;
-    flex: 0 1 8rem;
+    flex: 0 0 8rem;
   }
 
   .config-uri-edit {
@@ -28,5 +28,8 @@
     margin-top: 1.5rem;
   }
 
+  .fetch-button.spacer {
+      flex: 0 0 2rem;
+  }
 
 }

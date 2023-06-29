@@ -19,7 +19,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
     ButtonModule,
-    CheckboxModule, DropdownModule,
+    CheckboxModule, DialogModule, DropdownModule,
     InputModule, NumberModule,
     PanelModule,
     TabsModule,
@@ -35,6 +35,13 @@ import { FormElementComponent } from './components/designer/form-element/form-el
 import { GroupByRowPipe } from './components/designer/group-by-row.pipe';
 import { FormElementEditorComponent } from './components/form-element-editor/form-element-editor.component';
 import { MarkdownViewerComponent } from './components/designer/markdown-viewer/markdown-viewer.component';
+import { ConfigurationFileEditorComponent } from './components/configuration-file-editor/configuration-file-editor.component';
+import {HttpClientModule} from "@angular/common/http";
+import { OutputModuleComponent } from './components/output-module/output-module.component';
+import {LocalStoragePersistenceService} from "./services/local-storage-persistence.service";
+import { ToolbarComponent } from './components/designer/toolbar/toolbar.component';
+import {ConfigurationFileBindingService} from "./services/configuration-file-binding.service";
+import { ProjectsManagerComponent } from './components/projects-manager/projects-manager.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +54,11 @@ import { MarkdownViewerComponent } from './components/designer/markdown-viewer/m
     FormElementComponent,
     GroupByRowPipe,
     FormElementEditorComponent,
-    MarkdownViewerComponent
+    MarkdownViewerComponent,
+    ConfigurationFileEditorComponent,
+    OutputModuleComponent,
+    ToolbarComponent,
+    ProjectsManagerComponent
   ],
     imports: [
         BrowserModule,
@@ -61,8 +72,16 @@ import { MarkdownViewerComponent } from './components/designer/markdown-viewer/m
         InputModule,
         NumberModule,
         DropdownModule,
+        HttpClientModule,
+        DialogModule
     ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+    constructor(persist: LocalStoragePersistenceService, bindings: ConfigurationFileBindingService) {
+    }
+
+
+}

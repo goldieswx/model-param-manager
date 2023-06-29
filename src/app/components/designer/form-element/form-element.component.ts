@@ -12,23 +12,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import {Component, ElementRef, inject, Input, OnDestroy} from '@angular/core';
-import {FormItem} from "../design-form/form-manager.service";
-import {DesignerEventsService} from "../designer-events.service";
+import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {FormItem} from "../../../services/form-manager.service";
+import {DesignerEventsService} from "../../../services/designer-events.service";
 import {Subscription} from "rxjs";
+import {ConfigurationFileService} from "../../../services/configuration-file.service";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-form-element',
   templateUrl: './form-element.component.html',
   styleUrls: ['./form-element.component.scss']
 })
-export class FormElementComponent implements OnDestroy {
+export class FormElementComponent implements OnDestroy, OnChanges {
 
   #events = inject(DesignerEventsService);
   #elRef = inject(ElementRef);
+  #configFile = inject(ConfigurationFileService);
 
   @Input() element : FormItem;
   private subs = new Subscription();
+
+  dropdownItems : any[]= [];
 
   constructor() {
     this.subs.add(this.#events.getDragEvents().subscribe((e) => {
@@ -43,6 +48,18 @@ export class FormElementComponent implements OnDestroy {
       }
 
     }));
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes && changes['element']?.currentValue) {
+            if (this.element?.display === 'dropdown') {
+                console.log(this.element);
+                const items = this.#configFile.getValue(this.element.displayOptions.configName, this.element.displayOptions.dataKey);
+                const [k,v] = [_.keys(items), _.values(items)];
+                this.dropdownItems = _.map(k,(key, index) => ({ content: v[index], key: k }));
+                console.log(this.dropdownItems,k,v,items);
+            }
+      }
   }
 
   setCurrentFormElement() {

@@ -1,44 +1,52 @@
 <ng-container *ngIf="formItem">
 
-<div style="display: flex">
-  <div class="key-value">Original Key: <span>{{ formItem.key }}</span>  </div>
-  <button size="sm" class="highlight" [ibmButton]="'primary'">Highlight</button>
-</div>
+  <div style="display: flex" *ngIf="formItem.key">
+    <div class="key-value">Original Key: <span>{{ formItem.key }}</span>  </div>
+    <button size="sm" class="highlight" [ibmButton]="'primary'">Highlight</button>
+  </div>
 
-<ibm-label>
-  Value
-  <input
-  ibmText [size]="'sm'"
-  [(ngModel)]="formItem.value">
-</ibm-label>
-<ibm-label>
-  Label
-  <input
-  ibmText [size]="'sm'"
-  [(ngModel)]="formItem.label">
-</ibm-label>
+  <ibm-label *ngIf="!formItem.toolType">
+    Value
+    <input
+    ibmText [size]="'sm'"
+    [(ngModel)]="formItem.value">
+  </ibm-label>
 
+  <ibm-label >
+    Label
+    <input
+    ibmText [size]="'sm'"
+    [(ngModel)]="formItem.label">
+  </ibm-label>
 
-  <ibm-dropdown
+  <!-- DropDown -->
+  <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Type'"
     [placeholder]=""
     [size]="'sm'" (selected)="setType($event)">
     <ibm-dropdown-list [items]="availableTypes"></ibm-dropdown-list>
   </ibm-dropdown>
 
-  <ibm-dropdown
+  <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Display'"
     [size]="'sm'" (selected)="setDisplay($event)">
     <ibm-dropdown-list [items]="availableDisplays"></ibm-dropdown-list>
   </ibm-dropdown>
 
+  <ibm-label  *ngIf="!formItem.toolType && formItem.display === 'dropdown'">Dropdown JSON key value reference.
+    <div class="dropzone droppable">Drop Json Key here</div>
+  </ibm-label>
+  <!-- -->
+
+  <!-- Markdown -->
   <ng-container >
     <ibm-label>MarkDown Help Text
       <textarea [(ngModel)]="formItem.mdHelpText" (ngModelChange)="onMarkDownChanged()"></textarea>
     </ibm-label>
   </ng-container>
 
-  <ibm-dropdown
+  <!-- Output Module -->
+  <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Output Module'"
     [size]="'sm'" (selected)="setOutputModule($event)">
     <ibm-dropdown-list [items]="outputModules"></ibm-dropdown-list>

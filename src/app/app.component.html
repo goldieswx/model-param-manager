@@ -1,11 +1,20 @@
 <div >
   <header >
-    <ibm-header name="[Platform]">
+    <ibm-header name="Tool management Interface" brand="Configuration">
+      <ibm-header-global>
+        <ibm-header-action title="action" (click)="manageProjects()">
+          <i class="fas fa-solid fa-sd-card" style="color: white; font-size: 18px"></i>
+        </ibm-header-action>
+      </ibm-header-global>
     </ibm-header>
+
   </header>
   <main>
-    <app-designer></app-designer>
-    <router-outlet></router-outlet>
+    <ng-container  *ngIf="init.$applicationLoaded | async">
+      <router-outlet></router-outlet>
+    </ng-container>
+
+
   </main>
   <footer>
   </footer>

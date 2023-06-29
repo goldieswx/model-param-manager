@@ -26,8 +26,12 @@ import {
 import * as _ from 'lodash';
 
 import * as interact from 'interactjs';
-import {DesignerEventsService} from "../../designer/designer-events.service";
+import {DesignerEventsService} from "../../../services/designer-events.service";
 import {Subscription} from "rxjs";
+import {FormManagerService} from "../../../services/form-manager.service";
+import {ConfigurationFileBindingService} from "../../../services/configuration-file-binding.service";
+import {bind} from "lodash";
+import {ConfigurationFile} from "../../../services/configuration-file.service";
 
 
 @Component({
@@ -39,16 +43,21 @@ export class JsonpartialComponent implements OnChanges, OnDestroy, OnInit  {
 
   #elRef = inject(ElementRef);
   #events = inject(DesignerEventsService);
+  #formManager = inject(FormManagerService);
+  #bindings = inject(ConfigurationFileBindingService);
 
   @Input('data')  data: any = {};
   @Input('key')   key = '';
   @Input('parentKey') parentKey = '';
-
+  @Input() configFile: ConfigurationFile;
 
   public renderedData : any[] = [];
   public isExpanded = false;
   public isComposite = false;
   public beingDragged = false;
+  public bound = false;
+
+  public inferredType = 'any';
 
   private subs = new Subscription();
 
@@ -56,7 +65,7 @@ export class JsonpartialComponent implements OnChanges, OnDestroy, OnInit  {
       this.subs.add(this.#events.getDragEvents().subscribe((e) => {
           if (this.getRef() === e.event?.relatedTarget?.parentElement) {
             if (e.type === 'drag-drop') {
-              this.#events.pushDropEvent('drop', e.event, { key: this.key, data: this.data, parentKey: this.parentKey } );
+              this.#events.pushDropEvent('drop', e.event, { key: this.key, data: this.data, parentKey: this.parentKey, configFile: this.configFile } );
             }
           } else if (this.getRef() === e.event?.target?.parentElement) {
             if (e.type === 'start') {
@@ -65,6 +74,10 @@ export class JsonpartialComponent implements OnChanges, OnDestroy, OnInit  {
               this.beingDragged = false;
             }
           }
+      }));
+
+      this.subs.add(this.#bindings.getOnBindingsChanged().subscribe(bindings => {
+        this.bound = !!_.find(bindings, {originKey: `${this.parentKey}.${this.key}`});
       }));
   }
 
@@ -76,6 +89,7 @@ export class JsonpartialComponent implements OnChanges, OnDestroy, OnInit  {
               this.renderedData = _.toPairs(this.data);
             } else {
               this.renderedData = [this.data];
+              this.inferredType = this.#formManager.inferType(this.data);
             }
       }
   }

@@ -15,8 +15,8 @@ limitations under the License. */
 
 import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as _ from 'lodash';
-import {FormManagerService} from "../design-form/form-manager.service";
-import {Section, Subsection} from "../designer.service";
+import {FormManagerService} from "../../../services/form-manager.service";
+import {DesignerService, Section, Subsection} from "../../../services/designer.service";
 
 
 @Component({
@@ -28,19 +28,20 @@ export class DesignSectionComponent implements OnChanges {
 
     @Input() section : Section;
     #formManager = inject(FormManagerService);
+    #designer = inject(DesignerService);
 
     public currentSubsection : Subsection = null;
 
     public addSubsection() {
-        this.section.subSections.push({
-            name: 'New subsection',
-            form: this.#formManager.getEmptyDesignForm()
-        })
+        this.#designer.addSubSection(this.section,{
+          name: 'New subsection',
+          form: this.#formManager.getEmptyDesignForm()
+        });
     }
 
     public removeSubsection() {
         if (this.currentSubsection) {
-          this.section.subSections = _.pull(this.section.subSections, this.currentSubsection);
+          this.#designer.removeSubsection(this.section, this.currentSubsection);
         }
     }
 
@@ -51,4 +52,7 @@ export class DesignSectionComponent implements OnChanges {
       }
     }
 
+  updateSubsectionName() {
+      this.#designer.triggerSectionChanged(this.section);
+  }
 }

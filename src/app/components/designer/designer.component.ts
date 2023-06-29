@@ -15,11 +15,14 @@ limitations under the License. */
 
 import {AfterViewInit, Component, inject, OnDestroy, ViewChild} from '@angular/core';
 import * as interact from "interactjs";
-import {DesignerEventsService, FormAction} from "./designer-events.service";
+import {DesignerEventsService, FormAction} from "../../services/designer-events.service";
 import {Subscription} from "rxjs";
-import {DesignerService, Section} from "./designer.service";
-import {ConfigurationFile, ConfigurationFileService} from "../configuration-file.service";
-import {OutputModule, OutputModuleService} from "../output-module/output-module.service";
+import {DesignerService, Section} from "../../services/designer.service";
+import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
+import {OutputModule, OutputModuleService} from "../../services/output-module.service";
+import * as _ from 'lodash';
+import {ActivatedRoute, Router} from "@angular/router";
+import {ConfigProject, ProjectsManagerService} from "../../services/projects-manager.service";
 
 @Component({
   selector: 'app-designer',
@@ -32,10 +35,11 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   #designer = inject(DesignerService);
   #configFiles = inject(ConfigurationFileService);
   #outputModules = inject(OutputModuleService);
+  #projects = inject(ProjectsManagerService);
 
   sideDisplay: any = { tree: true };
 
-  sections = this.#designer.getSections();
+  sections: Section[] = [];
 
   private subs = new Subscription();
   configurationFiles: ConfigurationFile[] = [];
@@ -44,17 +48,45 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
   manageButtonsShown = false;
   manageButtonsTimeout = 0;
+  showToolbar = false;
 
+  currentProject: ConfigProject = null;
 
+  constructor(private router: Router, activeRoute: ActivatedRoute) {
 
-  constructor() {
-      this.configurationFiles = this.#configFiles.getConfigurationFiles();
-      this.outputModules = this.#outputModules.getOutputModules();
+    this.subs.add(
+      activeRoute.params.subscribe((params )=> {
+            this.#projects.getProject(params['projectId']).subscribe((config) => {
+
+              this.configurationFiles =  config.data?.configurationFiles || [];
+              this.outputModules = config.data?.outputModules || [];
+              this.sections = config.data?.sections || [];
+
+              this.currentProject = config;
+              this.currentProject.data = {
+                      configurationFiles: this.configurationFiles,
+                      outputModules: this.outputModules,
+                      sections: this.sections
+              }
+
+              this.#outputModules.setModules(this.outputModules);
+              this.#configFiles.setFiles(this.configurationFiles);
+              this.#designer.setSections(this.sections);
+              this.currentSection = _.first(this.sections) || null;
+
+            });
+      }));
   }
 
-
   ngOnDestroy() {
+      this.saveProject()
       this.subs.unsubscribe();
+  }
+
+  private saveProject() {
+      this.#projects.saveProject(this.currentProject).subscribe((saveResult) => {
+          console.log('saved project', saveResult);
+      });
   }
 
   addConfigurationFile() {
@@ -96,6 +128,11 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   onSectionSelect(currentSection: Section) {
       this.currentSection = currentSection;
   }
+
+  updateSectionName() {
+      this.#designer.triggerSectionChanged(this.currentSection);
+  }
+
 
   ngAfterViewInit() {
 
@@ -185,5 +222,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   }
 
 
-
+  toggleToolbar() {
+      this.showToolbar = !this.showToolbar;
+  }
 }

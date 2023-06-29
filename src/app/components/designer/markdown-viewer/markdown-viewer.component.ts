@@ -9,9 +9,9 @@ import {
   ViewChild
 } from '@angular/core';
 import * as MarkdownIt from 'markdown-it';
-import {DesignerEventsService, FormAction} from "../designer-events.service";
+import {DesignerEventsService, FormAction} from "../../../services/designer-events.service";
 import {Subscription} from "rxjs";
-import {FormItem} from "../design-form/form-manager.service";
+import {FormItem} from "../../../services/form-manager.service";
 
 const md = new MarkdownIt();
 

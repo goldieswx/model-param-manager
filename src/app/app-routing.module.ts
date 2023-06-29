@@ -14,8 +14,19 @@ limitations under the License. */
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {ProjectsManagerComponent} from "./components/projects-manager/projects-manager.component";
+import {DesignerComponent} from "./components/designer/designer.component";
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', redirectTo: 'projects', pathMatch: 'full' },
+  { path: 'projects',
+    component: ProjectsManagerComponent },
+  { path: 'projects/:projectId',
+    component: ProjectsManagerComponent },
+  { path: 'designer/:projectId',
+    component: DesignerComponent }
+
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

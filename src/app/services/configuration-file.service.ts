@@ -13,10 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import {inject, Injectable} from '@angular/core';
-import {dataMock, dataMock2} from "./jsonview/mock";
+import {dataMock, dataMock2} from "../components/jsonview/mock";
 import {BehaviorSubject, map, Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import * as _ from 'lodash';
+import {OutputModule} from "./output-module.service";
 
 export interface ConfigurationFile {
       uri?: string;
@@ -37,18 +38,13 @@ export class ConfigurationFileService {
 
   constructor() {
 
-        this.setFiles( [ /*{
-          uri: "http://uri",
-          contents: JSON.stringify(dataMock),
-          machineName: 'burdiConfig',
-          type: 'json'
-        },
-          {
-            uri: null,
-            contents: null, // JSON.stringify(dataMock2),
-            machineName: 'webAppConfig',
-            type: 'json'
-          }*/] );
+    const storedFiles: ConfigurationFile[] = JSON.parse(localStorage.getItem('configuration-files') ) || [];
+
+    this.setFiles(storedFiles);
+
+    this.getOnConfigurationFilesChanged().subscribe((files) => {
+      localStorage.setItem('configuration-files', JSON.stringify(files));
+    });
 
   }
 
@@ -97,6 +93,15 @@ export class ConfigurationFileService {
         this._configurationFile.splice(index);
         this.setFiles();
       }
+  }
+
+  public getValue(configFileName: string, key: string) : any {
+        debugger;
+        const config = _.find(this._configurationFile, { machineName: configFileName });
+        if (config) {
+          const parsedFile = JSON.parse(config.contents);
+          return _.get(parsedFile, key);
+        }
   }
 
 

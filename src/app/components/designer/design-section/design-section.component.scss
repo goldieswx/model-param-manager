@@ -16,6 +16,18 @@
   display: flex;
   flex-direction: row;
 
+  .subsection-edit {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 0.875rem
+  }
+
+  .no-content {
+    padding: 1.5rem;
+  }
+
   > .form {
      flex-grow: 1;
      .subsection-name {

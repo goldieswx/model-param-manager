@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import {Component, inject, Input} from '@angular/core';
-import {ConfigurationFile, ConfigurationFileService} from "../configuration-file.service";
+import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
 
 
 @Component({
@@ -25,17 +25,22 @@ export class ConfigurationFileEditorComponent {
 
   @Input() config : ConfigurationFile;
 
-
   #configService = inject(ConfigurationFileService);
 
   getConfigFile(config: ConfigurationFile) {
-      this.#configService.getFileContents(config.uri).subscribe((t) => config.contents = t );
+      this.#configService.getFileContents(config.uri).subscribe((t) => {
+        config.contents = t;
+        this.updateFiles();
+      } );
   }
 
   deleteConfigFile(config: ConfigurationFile) {
       this.#configService.removeConfigFile(config);
   }
 
+  updateFiles() {
+      this.#configService.setFiles();
+  }
 
 
 }

@@ -14,7 +14,7 @@ limitations under the License. */
 
 
 import { Pipe, PipeTransform } from '@angular/core';
-import {FormItem} from "./design-form/form-manager.service";
+import {FormItem} from "../../services/form-manager.service";
 import * as _  from 'lodash';
 
 @Pipe({

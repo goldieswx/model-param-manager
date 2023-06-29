@@ -1,0 +1,45 @@
+<div style="display: flex;">
+<ul data-accordion class="bx--accordion" class="projects-list">
+  <li data-accordion-item class="bx--accordion__item" *ngFor="let project of projects;">
+    <button class="bx--accordion__heading" (click)="setCurrentProject(project)">
+      <div class="bx--accordion__title">{{ project?.projectName || project?.projectId }}</div>
+    </button>
+  </li>
+</ul>
+
+  <div class="project-properties" *ngIf="currentProject">
+
+    <div style="display: flex">
+      <h4 style="flex: 1;">Manage project</h4>
+      <div *ngIf="currentProject">
+        <button ibmButton="secondary" [size]="'sm'" (click)="editCurrentProject()">Edit</button>
+        <button ibmButton="danger" [size]="'sm'">Delete</button>
+        <button  [size]="'sm'" ibmButton="primary">Save</button>
+      </div>
+    </div>
+    <br>
+
+    <ng-container >
+      <ibm-label >
+        Project name
+        <input
+          ibmText [size]="'sm'" [(ngModel)]="currentProject.projectName">
+      </ibm-label><br>
+
+      <ibm-label >
+        Machine name (url)
+        <input
+          ibmText [size]="'sm'" [(ngModel)]="currentProject.projectId">
+      </ibm-label>
+
+      <ibm-label>Description
+        <textarea [(ngModel)]="currentProject.projectDescription"></textarea>
+      </ibm-label>
+    </ng-container>
+  </div>
+
+  <div class="project-properties" *ngIf="!currentProject">
+        <h5>Please create a new project or select an existing project.</h5>
+  </div>
+
+</div>

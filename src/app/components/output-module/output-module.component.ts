@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import {Component, inject, Input} from '@angular/core';
-import {OutputModule, OutputModuleService} from "./output-module.service";
+import {OutputModule, OutputModuleService} from "../../services/output-module.service";
 
 @Component({
   selector: 'app-output-module',
@@ -39,4 +39,7 @@ export class OutputModuleComponent {
       this.#outputModule.getOutputModuleData(module.name);
   }
 
+  delete(module: OutputModule) {
+       this.#outputModule.deleteModule(module);
+  }
 }

@@ -1,0 +1,6 @@
+{
+
+  "reloadConfigurationFiles": true,
+  "readOnly": true,
+  "backendUrl": "http://localhost:3000"
+}

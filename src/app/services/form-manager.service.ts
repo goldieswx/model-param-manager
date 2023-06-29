@@ -14,19 +14,22 @@ limitations under the License. */
 
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
+import {Observable, Subject} from "rxjs";
+import {ChangeObserver} from "./designer.service";
 
 export interface FormItem {
-    key: string;
-    value: any;
-    type: 'string' | 'number' | 'date' | 'boolean' | string ;
-    display: 'checkbox' | 'text' | 'number' | 'slider' | 'textarea' | 'dropdown' | 'datepicker' | 'timepicker' |  string;
+    key ?: string;
+    value ?: any;
+    type ?: 'string' | 'number' | 'date' | 'boolean' | string ;
+    display ?: 'checkbox' | 'text' | 'number' | 'slider' | 'textarea' | 'dropdown' | 'datepicker' | 'timepicker'  |  string;
+    displayOptions ?: any;
     label: string;
+    toolType ?: 'label' | string;
     displayRow?: number;
     displayCol?: number;
     mdHelpText?: string;
     outputModule ?: string;
 }
-
 
 export interface DesignForm  {
   items: FormItem[];
@@ -38,6 +41,7 @@ export interface DesignForm  {
 export class FormManagerService {
 
   private _form: DesignForm = null;
+  private $_formItemchanges = new Subject<ChangeObserver<FormItem>>();
 
   constructor() { }
 
@@ -141,7 +145,7 @@ export class FormManagerService {
 
             this._form.items.push(newItem);
             this._form.items = this.reorderItemsByRowCol(this._form.items);
-
+            this.triggerFormItemChanges(newItem, 'create');
           }
       }
   }
@@ -152,13 +156,38 @@ export class FormManagerService {
       item.displayCol = (target.useSide) ? 999 : null;
 
       this._form.items = this.reorderItemsByRowCol(this._form.items);
+      this.triggerFormItemChanges(item, 'update');
   }
 
   public removeItem (item: FormItem) {
 
     this._form.items = _.pull(this._form.items, item);
     this._form.items = this.reorderItemsByRowCol(this._form.items);
+    this.triggerFormItemChanges(item, 'delete');
   }
 
+  public triggerFormItemChanges(item: FormItem, action: string) {
+      this.$_formItemchanges.next({ action, data: item});
+  }
 
+  public getOnFormItemChanged(): Observable<ChangeObserver<FormItem>> {
+      return this.$_formItemchanges.asObservable();
+  }
+
+  addTool(dragOriginData: any, target: { insertAt: number, useSide: boolean}) {
+
+    const newItem = {
+      toolType: 'label',
+      label: 'Label' /* + ' [' + fullKey + ']' */,
+      displayRow: (target.insertAt + 1) - ((target.useSide) ? 0 : 0.5), /* insertAt is zero based. display Row is 1 based. We insert before => -.5*/
+      displayCol: (target.useSide) ? 999 : null,
+      outputModule: 'default'
+    };
+
+    this._form.items.push(newItem);
+    this._form.items = this.reorderItemsByRowCol(this._form.items);
+    this.triggerFormItemChanges(newItem, 'create');
+
+
+  }
 }

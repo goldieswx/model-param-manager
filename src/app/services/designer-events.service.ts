@@ -14,7 +14,7 @@ limitations under the License. */
 
 import {inject, Injectable, NgZone} from '@angular/core';
 import {Observable, Subject} from "rxjs";
-import {FormItem} from "./design-form/form-manager.service";
+import {FormItem} from "./form-manager.service";
 
 export interface AppDragEvent {
     type: string;

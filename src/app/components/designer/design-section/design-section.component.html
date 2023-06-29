@@ -6,25 +6,25 @@
       <ul>
           <li *ngFor="let subsection of section.subSections;">
              <button (click)="currentSubsection = subsection"
-               [ibmButton]="(currentSubsection?.name === subsection.name)?'primary':'secondary'" >
-               {{ subsection.name }}
+               [ibmButton]="(currentSubsection === subsection)?'primary':'secondary'" >
+               <input type="text" [(ngModel)]="subsection.name" (ngModelChange)="updateSubsectionName()"  class="subsection-edit" >
              </button>
           </li>
       </ul>
 
+    <br>
+    <div class="add-remove-subsection">
+      <button style="padding: 0 0.5rem;" *ngIf="section?.subSections?.length" [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
+      <button  style="padding: 0 0.5rem;"[ibmButton]="'secondary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
+    </div>
+
+  </div>
+
+  <div *ngIf="!(section?.subSections?.length)" class="no-content">
+        No subsection created.
   </div>
 
   <section class="form" >
-    <div class="subsection-name">
-      <ng-container *ngIf="currentSubsection">
-        <i class="fa fa-solid fa-pencil"></i><input type="text" [(ngModel)]="currentSubsection.name"  />
-      </ng-container>
-
-      <div class="add-remove-subsection">
-          <button [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
-          <button [ibmButton]="'primary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i>Add Subsection</button>
-      </div>
-    </div>
     <app-design-form *ngIf="currentSubsection" [form]="currentSubsection.form"></app-design-form>
   </section>
 

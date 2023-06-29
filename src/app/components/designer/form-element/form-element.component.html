@@ -1,5 +1,13 @@
 
-<div [ngSwitch]="element.display" (click)="setCurrentFormElement()" >
+<div [ngSwitch]="element.display" (click)="setCurrentFormElement()" *ngIf="element?.toolType" class="tool">
+
+
+    <label><input type="text"  [(ngModel)]="element.label"></label>
+  <div class="help" *ngIf="element?.mdHelpText?.length">
+    <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
+</div>
+
+<div [ngSwitch]="element.display" (click)="setCurrentFormElement()" *ngIf="element?.display" class="form" >
 
   <div class="help" *ngIf="element?.mdHelpText?.length">
     <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
@@ -31,6 +39,19 @@
 
     </ibm-number>
   </ng-container>
+
+  <ng-container *ngSwitchCase="'dropdown'">
+    <ibm-label>
+      dropdown {{ element.displayOptions | json }}
+    </ibm-label>
+  </ng-container>
+
+
+  <ibm-dropdown  *ngSwitchCase="'dropdown'">
+                [label]="element.label"
+                [size]="'sm'" (selected)="setDropdownValue($event)">
+    <ibm-dropdown-list [items]="dropdownItems"></ibm-dropdown-list>
+  </ibm-dropdown>
 
   <ng-container *ngSwitchDefault>
       <p>

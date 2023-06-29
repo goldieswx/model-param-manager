@@ -55,15 +55,31 @@
 
   <div class="design-pad" >
 
-    <ibm-tabs (mousemove)="showManageButtons($event)" (mouseleave)="hideManageButtons()"  >
-      <ibm-tab [heading]="section.name" *ngFor="let section of sections;" (selected)="onSectionSelect(section)">
-          <app-design-section [section]="section" ></app-design-section>
-      </ibm-tab>
-    </ibm-tabs>
-    <div class="add-remove-section" *ngIf="manageButtonsShown" (mouseenter)="showManageButtons(null)" >
+    <div class="toolbar" *ngIf="showToolbar"><app-toolbar></app-toolbar></div>
+
+    <div style="display: flex;">
+      <div data-tabs class="bx--tabs bx--tabs--container tabs" (mousemove)="showManageButtons($event)" (mouseleave)="hideManageButtons()">
+
+        <ul class="bx--tabs__nav bx--tabs__nav--hidden"   >
+          <li class="bx--tabs__nav-item" [ngClass]="{ 'bx--tabs__nav-item--selected': section === currentSection }"   *ngFor="let section of sections;" (click)="onSectionSelect(section)" >
+
+            <input class="bx--tabs__nav-link editable" [(ngModel)]="section.name" *ngIf="section === currentSection" (ngModelChange)="updateSectionName()" >
+            <a class="bx--tabs__nav-link" href="javascript:void(0)" *ngIf="section !== currentSection">{{ section.name }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="add-remove-section" *ngIf="manageButtonsShown || true " (mouseenter)="showManageButtons(null)"  style="display: flex; height: 2rem;">
         <button [ibmButton]="'danger'" class="droppable-remove" size="sm" *ngIf="sections.length > 1" (click)="removeCurrentSection()">Remove</button>
         <button [ibmButton]="'primary'" size="sm" (click)="addSection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
+        <button [ibmButton]="'primary'" size="sm" (click)="toggleToolbar()"><i class="fa-solid fa-screwdriver-wrench"></i> </button>
+      </div>
+
     </div>
+
+      <app-design-section [section]="currentSection" *ngIf="currentSection"></app-design-section>
+
+
 
   </div>
 

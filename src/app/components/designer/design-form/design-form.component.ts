@@ -14,10 +14,10 @@ limitations under the License. */
 
 
 import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {DesignerEventsService} from "../designer-events.service";
 import {Subscription} from "rxjs";
-import {DesignForm, FormManagerService} from "./form-manager.service";
+import {DesignForm, FormManagerService} from "../../../services/form-manager.service";
 import * as _ from 'lodash';
+import {DesignerEventsService} from "../../../services/designer-events.service";
 
 
 
@@ -58,6 +58,10 @@ export class DesignFormComponent implements OnDestroy, OnInit, OnChanges  {
              // reordered a form item into a new slot
                const targetDisplay = this._getDisplayTarget(e.event.target.classList);
                this.#formManager.moveItem( e.dragOriginData.element , targetDisplay);
+        } else if (e.type === 'drop-tool') {
+            console.log('dropped tool');
+            const targetDisplay = this._getDisplayTarget(e.event.target.classList);
+             this.#formManager.addTool( e.dragOriginData , targetDisplay);
         }
       } // other events.
       else if (e.event.target.classList.contains('droppable-remove')) {

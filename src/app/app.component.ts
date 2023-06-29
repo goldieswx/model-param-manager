@@ -13,6 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import { Component } from '@angular/core';
+import {InitializationService} from "./services/initialization.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -21,4 +23,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'model-param-manager';
+  applicationLoaded = false;
+
+  constructor(public init : InitializationService, private router: Router) {
+      init.loadConfig();
+  }
+
+  manageProjects() {
+        this.router.navigate(['projects'])
+  }
 }

@@ -21,4 +21,13 @@
        max-height: 2rem;
    }
 
+  .dropzone {
+    height: 2rem;
+    border: dotted 1px #999;
+    width: 100%;
+    text-align: center;
+    line-height: 2rem;
+    color: #ccc;
+  }
+
 }

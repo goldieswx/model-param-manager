@@ -9,20 +9,17 @@
 
     <div class="config-uri-edit" >
       <ibm-label>
-        Url
-        <input  ibmText size="sm" [(ngModel)]="module.uri" (ngModelChange)="update()" placeholder="http://" >
-
+        Send Url
+        <input  ibmText size="sm" [(ngModel)]="module.retrieveUri" (ngModelChange)="update()" placeholder="http://" >
       </ibm-label>
+    </div>
 
-
-      <div style="margin-top: .5rem;">
-      <ibm-dropdown
-                    [size]="'sm'" >
+      <ibm-dropdown style="margin-left: .5rem;"
+        [label]="'Url Verb'"            [size]="'sm'" >
         <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
       </ibm-dropdown>
-      </div>
 
-    </div>
+
 
     <div class="fetch-button">
       <!-- <button ibmButton="primary" size="sm" [disabled]="!!config.contents" (click)="getConfigFile(config)">Get</button> -->
@@ -31,11 +28,29 @@
         [placement]="'bottom'"
         [flip]="false" >
         <ibm-overflow-menu-option (click)="send(module)" >Send</ibm-overflow-menu-option>
-        <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" [disabled]="module.name === 'default'" >Delete</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" [disabled]="module.name === 'default'" (click)="delete(module)">Delete</ibm-overflow-menu-option>
       </ibm-overflow-menu>
 
     </div>
 
+  </div>
+
+  <div style="display: flex; flex-direction: row; margin-top: .5rem;">
+
+    <div class="spacer machine-name"></div>
+    <div class="config-uri-edit" >
+      <ibm-label>
+        Retreive Url
+        <input  ibmText size="sm" [(ngModel)]="module.persistUri" (ngModelChange)="update()" placeholder="http://" >
+      </ibm-label>
+    </div>
+
+    <ibm-dropdown style="margin-left: .5rem;"
+                  [label]="'Url Verb'"            [size]="'sm'" >
+      <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
+    </ibm-dropdown>
+
+    <div class="spacer fetch-button"></div>
   </div>
 
 </div>

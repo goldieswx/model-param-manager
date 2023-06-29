@@ -1,0 +1,15 @@
+
+
+:host {
+  .bx--toolbar {
+    margin: 0;
+    margin-top: -.25rem;
+      .bx--search {
+         height: 2.25rem;
+           i {
+              color: white;
+              font-size: 20px;
+           }
+      }
+  }
+}
