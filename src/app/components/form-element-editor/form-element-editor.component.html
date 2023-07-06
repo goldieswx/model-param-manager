@@ -22,13 +22,14 @@
   <!-- DropDown -->
   <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Type'"
-    [placeholder]=""
+    [placeholder]="availableTypes | dropdownDisplay : formItem.type"
     [size]="'sm'" (selected)="setType($event)">
     <ibm-dropdown-list [items]="availableTypes"></ibm-dropdown-list>
   </ibm-dropdown>
 
   <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Display'"
+   [placeholder]="availableDisplays | dropdownDisplay : formItem.display"
     [size]="'sm'" (selected)="setDisplay($event)">
     <ibm-dropdown-list [items]="availableDisplays"></ibm-dropdown-list>
   </ibm-dropdown>

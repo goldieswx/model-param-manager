@@ -18,6 +18,8 @@ export interface ConfigProject {
   projectId: string;
   projectDescription : string;
   data : ProjectData;
+  _unsaved ?: boolean;
+  _invalid ?: boolean;
 }
 
 @Injectable({
@@ -43,5 +45,10 @@ export class ProjectsManagerService {
   public saveProject(project: ConfigProject) {
 
       return this.http.post(this.backendUrl + '/project/' + project.projectId, project );
+  }
+
+  public deleteProject(project: ConfigProject) {
+    return this.http.delete(this.backendUrl + '/project/' + project.projectId );
+
   }
 }

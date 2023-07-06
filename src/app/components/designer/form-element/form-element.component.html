@@ -6,12 +6,12 @@
   <div class="help" *ngIf="element?.mdHelpText?.length">
     <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
 </div>
- {{ element.key }}
+
+
 <div [ngSwitch]="element.display" (click)="setCurrentFormElement()" *ngIf="element?.display" class="form" >
 
   <div class="help" *ngIf="element?.mdHelpText?.length">
     <i class="fa fa-regular fa-question-circle" (click)="showHelp()" ></i></div>
-
   <ng-container *ngSwitchCase="'checkbox'">
       <ibm-checkbox
         [(checked)]="element.value" >
@@ -23,35 +23,38 @@
     <ibm-label>
       {{element.label }}
       <input
-        ibmText [size]="'sm'"
-          [(ngModel)]="element.value">
+        ibmText [size]="'sm'" [invalid]="!configsBound.length"
+         [ngModel]="element.value | toText"
+          (ngModelChange)="setTextValue(element, $event)">
     </ibm-label>
   </ng-container>
 
-  <ng-container *ngSwitchCase="'textarea'">
-    <ibm-label>      {{element.label }}
-    <textarea [(ngModel)]="element.value" ></textarea>
+  <ng-container *ngSwitchCase="'textarea'" >
+    <ibm-label>      {{element.label}}
+    <textarea   [(ngModel)]="element.value" class="bx--text-area--invalid"></textarea>
     </ibm-label>
   </ng-container>
 
   <ng-container *ngSwitchCase="'number'">
-    <ibm-number [label]="element.label" [(ngModel)]="element.value" [size]="'sm'">
+    <ibm-number  [invalid]="!configsBound.length" [label]="element.label" [(ngModel)]="element.value" [size]="'sm'">
 
     </ibm-number>
   </ng-container>
 
-  <ng-container *ngSwitchCase="'dropdown'">
+  <!-- <ng-container *ngSwitchCase="'dropdown'">
     <ibm-label>
       dropdown {{ element.displayOptions | json }}
     </ibm-label>
-  </ng-container>
-
-
-  <ibm-dropdown  *ngSwitchCase="'dropdown'">
-                [label]="element.label"
-                [size]="'sm'" (selected)="setDropdownValue($event)">
-    <ibm-dropdown-list [items]="dropdownItems"></ibm-dropdown-list>
+  </ng-container> -->
+  <ibm-dropdown  [invalid]="!configsBound.length" invalidText="" *ngSwitchCase="'dropdown'"
+                [label]="element.label"  [dropUp]="false" [placeholder]="dropdownItems | dropdownDisplay: element.value"
+                [size]="'sm'" (selected)="setDropdownValue(element, $event)">
+    <ibm-dropdown-list  [items]="dropdownItems"></ibm-dropdown-list>
   </ibm-dropdown>
+
+  <ibm-date-picker  [invalid]="!configsBound.length" *ngSwitchCase="'datepicker'" [size]="'sm'" [label]="element.label"
+    [ngModel]="element.value" (ngModelChange)="setDate(element, $event)">
+  </ibm-date-picker>
 
   <ng-container *ngSwitchDefault>
       <p>

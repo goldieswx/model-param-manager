@@ -7,13 +7,13 @@
           <li *ngFor="let subsection of section.subSections;">
              <button (click)="currentSubsection = subsection"
                [ibmButton]="(currentSubsection === subsection)?'primary':'secondary'" >
-               <input type="text" [(ngModel)]="subsection.name" (ngModelChange)="updateSubsectionName()"  class="subsection-edit" >
+               <input [disabled]="readOnlyInterface" type="text" [(ngModel)]="subsection.name" (ngModelChange)="updateSubsectionName()"  class="subsection-edit" >
              </button>
           </li>
       </ul>
 
     <br>
-    <div class="add-remove-subsection">
+    <div class="add-remove-subsection" *ngIf="!readOnlyInterface">
       <button style="padding: 0 0.5rem;" *ngIf="section?.subSections?.length" [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
       <button  style="padding: 0 0.5rem;"[ibmButton]="'secondary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
     </div>

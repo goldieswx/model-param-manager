@@ -12,20 +12,38 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import {Component, inject, Input} from '@angular/core';
+import {AfterViewInit, Component, inject, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
-
+import * as CodeMirror from 'codemirror';
 
 @Component({
   selector: 'app-configuration-file-editor',
   templateUrl: './configuration-file-editor.component.html',
   styleUrls: ['./configuration-file-editor.component.scss']
 })
-export class ConfigurationFileEditorComponent {
+export class ConfigurationFileEditorComponent implements AfterViewInit, OnChanges {
 
   @Input() config : ConfigurationFile;
 
   #configService = inject(ConfigurationFileService);
+  @ViewChild('textEditor') textEditor: any;
+
+  private _codeMirror : any;
+
+  /*
+
+          console.log("setting config file value", t);
+        this._codeMirror.setValue(t);
+   */
+
+  ngOnChanges(changes: SimpleChanges) {
+
+      if (changes && changes['config']) {
+          console.log('changes', this.config.contents);
+           setTimeout(() => this._codeMirror.setValue(this.config.contents), 500);
+      }
+
+  }
 
   getConfigFile(config: ConfigurationFile) {
       this.#configService.getFileContents(config.uri).subscribe((t) => {
@@ -42,5 +60,26 @@ export class ConfigurationFileEditorComponent {
       this.#configService.setFiles();
   }
 
+  private initCodeEditor() {
 
+    if (this.textEditor) {
+      this._codeMirror = CodeMirror.fromTextArea(this.textEditor.nativeElement, {
+        lineNumbers: true,
+        lineWrapping: true,
+        mode: "nginx",
+        matchBrackets: true
+      });
+    } else {
+      console.log('could not load text editor');
+    }
+  }
+
+  ngAfterViewInit() {
+      this.initCodeEditor();
+  }
+
+  updateJsonContents() {
+     this.config.contents = this._codeMirror.getValue();
+      this.#configService.updateFile(this.config);
+  }
 }

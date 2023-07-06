@@ -12,7 +12,7 @@ import {ProjectsManagerService} from "./projects-manager.service";
 export interface AppConfig {
   reloadConfigurationFiles: boolean;
   backendUrl: string;
-  readonly: boolean;
+  readOnly: boolean;
 }
 
 export interface InitFileStructure {

@@ -2,9 +2,15 @@
 <ul data-accordion class="bx--accordion" class="projects-list">
   <li data-accordion-item class="bx--accordion__item" *ngFor="let project of projects;">
     <button class="bx--accordion__heading" (click)="setCurrentProject(project)">
-      <div class="bx--accordion__title">{{ project?.projectName || project?.projectId }}</div>
+      <div class="bx--accordion__title"><strong>{{ project?.projectName || project?.projectId }}</strong> - /{{ project?.projectId }}</div>
     </button>
   </li>
+  <br>
+  <button [ibmButton]="'primary'"
+          (click)="addEmptyProject()"
+          style="float: right;"
+          *ngIf="!readOnlyInterface && !hasUnsavedProject"
+          [size]="'sm'"><i class="fas fa-plus-circle"></i> &nbsp; Add</button>
 </ul>
 
   <div class="project-properties" *ngIf="currentProject">
@@ -12,9 +18,9 @@
     <div style="display: flex">
       <h4 style="flex: 1;">Manage project</h4>
       <div *ngIf="currentProject">
-        <button ibmButton="secondary" [size]="'sm'" (click)="editCurrentProject()">Edit</button>
-        <button ibmButton="danger" [size]="'sm'">Delete</button>
-        <button  [size]="'sm'" ibmButton="primary">Save</button>
+        <button ibmButton="secondary" *ngIf="!currentProject?._unsaved && !currentProject?._invalid" [size]="'sm'" (click)="editCurrentProject()">Edit</button>
+        <button *ngIf="!readOnlyInterface" ibmButton="danger" [size]="'sm'" (click)="deleteCurrentProject()" >Delete</button>
+        <button *ngIf="!readOnlyInterface && !currentProject?._invalid" [size]="'sm'" ibmButton="primary"  (click)="saveCurrentProject()">Save</button>
       </div>
     </div>
     <br>
@@ -22,24 +28,27 @@
     <ng-container >
       <ibm-label >
         Project name
-        <input
+        <input [disabled]="readOnlyInterface"
           ibmText [size]="'sm'" [(ngModel)]="currentProject.projectName">
       </ibm-label><br>
 
       <ibm-label >
         Machine name (url)
-        <input
-          ibmText [size]="'sm'" [(ngModel)]="currentProject.projectId">
+        <input [disabled]="readOnlyInterface || !currentProject._unsaved"
+          ibmText [size]="'sm'" [ngModel]="currentProject.projectId" (ngModelChange)="setProjectId(currentProject, $event)">
       </ibm-label>
 
       <ibm-label>Description
-        <textarea [(ngModel)]="currentProject.projectDescription"></textarea>
+        <textarea [disabled]="readOnlyInterface" [(ngModel)]="currentProject.projectDescription"></textarea>
       </ibm-label>
     </ng-container>
   </div>
 
-  <div class="project-properties" *ngIf="!currentProject">
-        <h5>Please create a new project or select an existing project.</h5>
+  <div class="project-properties" *ngIf="!currentProject ">
+       <br> <h5 *ngIf="!readOnlyInterface">Please create a new project or select an existing project.</h5>
+       <h5 *ngIf="readOnlyInterface && projects.length">Please select a project.</h5>
+       <h5 *ngIf="readOnlyInterface && !projects.length">No project(s) created!. Enable editor mode and create one or more Projects.</h5>
+
   </div>
 
 </div>

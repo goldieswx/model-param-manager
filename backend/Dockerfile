@@ -13,6 +13,7 @@ RUN npx tsc
 FROM node:18 as backend-api
 
 RUN mkdir -p /usr/app/backend/projects
+RUN mkdir -p /usr/app/backend/storage
 
 WORKDIR /usr/app
 

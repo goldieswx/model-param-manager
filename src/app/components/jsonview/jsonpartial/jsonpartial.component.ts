@@ -77,7 +77,7 @@ export class JsonpartialComponent implements OnChanges, OnDestroy, OnInit  {
       }));
 
       this.subs.add(this.#bindings.getOnBindingsChanged().subscribe(bindings => {
-        this.bound = !!_.find(bindings, {originKey: `${this.parentKey}.${this.key}`});
+        this.bound = !!_.find(bindings, {originKey: _.compact([this.parentKey,this.key]).join('.')});
       }));
   }
 

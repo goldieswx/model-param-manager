@@ -20,7 +20,7 @@ import {ChangeObserver} from "./designer.service";
 export interface FormItem {
     key ?: string;
     value ?: any;
-    type ?: 'string' | 'number' | 'date' | 'boolean' | string ;
+    type ?: 'string' | 'number' | 'date' | 'boolean' | 'string-array' | 'number-array' |  string ;
     display ?: 'checkbox' | 'text' | 'number' | 'slider' | 'textarea' | 'dropdown' | 'datepicker' | 'timepicker'  |  string;
     displayOptions ?: any;
     label: string;
@@ -70,7 +70,7 @@ export class FormManagerService {
            return 'date';
         }
         if (_.isArray(value)) {
-          return 'array';
+          return 'string-array';
         }
         if (_.isObject(value)) {
           return 'object';
@@ -113,6 +113,7 @@ export class FormManagerService {
 
     return ret;
   }
+
 
   public addItem(key: string, value: any, parentKey: string, target: { insertAt: number, useSide: boolean}) {
 

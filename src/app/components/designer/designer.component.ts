@@ -16,13 +16,14 @@ limitations under the License. */
 import {AfterViewInit, Component, inject, OnDestroy, ViewChild} from '@angular/core';
 import * as interact from "interactjs";
 import {DesignerEventsService, FormAction} from "../../services/designer-events.service";
-import {Subscription} from "rxjs";
+import {catchError, of, Subscription, throwError} from "rxjs";
 import {DesignerService, Section} from "../../services/designer.service";
 import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
 import {OutputModule, OutputModuleService} from "../../services/output-module.service";
 import * as _ from 'lodash';
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfigProject, ProjectsManagerService} from "../../services/projects-manager.service";
+import {InitializationService} from "../../services/initialization.service";
 
 @Component({
   selector: 'app-designer',
@@ -36,6 +37,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   #configFiles = inject(ConfigurationFileService);
   #outputModules = inject(OutputModuleService);
   #projects = inject(ProjectsManagerService);
+  #config = inject(InitializationService);
 
   sideDisplay: any = { tree: true };
 
@@ -46,8 +48,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   outputModules: OutputModule[] = [];
   currentSection: Section = null;
 
-  manageButtonsShown = false;
-  manageButtonsTimeout = 0;
+  readOnlyInterface = (this.#config.getConfig() || { readOnly: true}).readOnly;
   showToolbar = false;
 
   currentProject: ConfigProject = null;
@@ -56,7 +57,9 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
     this.subs.add(
       activeRoute.params.subscribe((params )=> {
-            this.#projects.getProject(params['projectId']).subscribe((config) => {
+            this.#projects.getProject(params['projectId'])
+              .pipe(catchError(() =>  throwError(() => new Error ('project doenst exist'))))
+              .subscribe((config) => {
 
               this.configurationFiles =  config.data?.configurationFiles || [];
               this.outputModules = config.data?.outputModules || [];
@@ -73,6 +76,10 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
               this.#configFiles.setFiles(this.configurationFiles);
               this.#designer.setSections(this.sections);
               this.currentSection = _.first(this.sections) || null;
+
+              if (this.readOnlyInterface) {
+                this.#outputModules.readFromAllOutputModuleData();
+              }
 
             });
       }));
@@ -97,25 +104,6 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
      this.#outputModules.addOutputModule();
   }
 
-  showManageButtons(e: any) {
-    if (e && e.clientY >= 125) {
-       // show only buttons where mouse is within the header (no easy dom access to those elements)
-       this.hideManageButtons();
-       return;
-    }
-    if (this.manageButtonsTimeout) {
-      clearTimeout(this.manageButtonsTimeout);
-      this.manageButtonsTimeout = 0;
-    }
-    this.manageButtonsShown = true;
-  }
-
-  hideManageButtons() {
-      if (this.manageButtonsTimeout) {
-          clearTimeout(this.manageButtonsTimeout);
-      }
-      this.manageButtonsTimeout = setTimeout(() => this.manageButtonsShown = false,250);
-  }
 
   addSection() {
       this.#designer.addSection('New Section');
@@ -131,6 +119,10 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
   updateSectionName() {
       this.#designer.triggerSectionChanged(this.currentSection);
+  }
+
+  sendAllOutputModules() {
+       this.#outputModules.sendAllOutputModules();
   }
 
 

@@ -18,6 +18,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {DesignerService, Section} from "./designer.service";
 import * as _ from 'lodash';
 import {HttpClient} from "@angular/common/http";
+import {FormItem} from "./form-manager.service";
 
 export interface OutputModule {
       name: string;
@@ -87,6 +88,8 @@ export class OutputModuleService {
 
   }
 
+
+
   public getOutputModuleData(module: OutputModule): OutputProcessedData {
           const sections : Section[]= this.#designer.getSections();
 
@@ -127,14 +130,23 @@ export class OutputModuleService {
 
   }
 
+  public sendAllOutputModules() {
+       this._outputModules.map(m => this.getOutputModuleData(m));
+
+  }
+
+  public readFromAllOutputModuleData() {
+        this._outputModules.map(m => this.readFromOutputModuleData(m));
+  }
+
   public readFromOutputModuleData(module: OutputModule) {
+
+
         this.http.get(module.retrieveUri).subscribe((data) => {
               const allKeys : string[] = [];
               this._keysDeep(data, allKeys);
 
               const sections : Section[]= this.#designer.getSections();
-
-              console.log('all keys', allKeys);
 
               _.each(sections || [],(section) => {
                 _.each(section.subSections || [], (subSection) => {
@@ -142,7 +154,6 @@ export class OutputModuleService {
                     if (formItem.outputModule === module.name) {
                       if (formItem.key) {
                         if (_.indexOf(allKeys,formItem.key) >= 0) {
-                             console.log('setting key', formItem.key, 'to value', formItem.value);
                             formItem.value = _.get(data, formItem.key);
                         } else {
                              console.log('ignoring key', formItem.key);

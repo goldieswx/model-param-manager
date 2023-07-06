@@ -18,12 +18,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-    ButtonModule,
-    CheckboxModule, DialogModule, DropdownModule,
-    InputModule, NumberModule,
-    PanelModule,
-    TabsModule,
-    UIShellModule
+  ButtonModule,
+  CheckboxModule, DatePickerInputModule, DatePickerModule, DialogModule, DropdownModule,
+  InputModule, NumberModule,
+  PanelModule,
+  TabsModule,
+  UIShellModule
 } from "carbon-components-angular";
 import { JsonviewComponent } from './components/jsonview/jsonview.component';
 import {FormsModule} from "@angular/forms";
@@ -42,6 +42,8 @@ import {LocalStoragePersistenceService} from "./services/local-storage-persisten
 import { ToolbarComponent } from './components/designer/toolbar/toolbar.component';
 import {ConfigurationFileBindingService} from "./services/configuration-file-binding.service";
 import { ProjectsManagerComponent } from './components/projects-manager/projects-manager.component';
+import { ToTextPipe } from './components/designer/form-element/to-text.pipe';
+import { DropdownDisplayPipe } from './pipes/dropdown-display.pipe';
 
 @NgModule({
   declarations: [
@@ -58,29 +60,36 @@ import { ProjectsManagerComponent } from './components/projects-manager/projects
     ConfigurationFileEditorComponent,
     OutputModuleComponent,
     ToolbarComponent,
-    ProjectsManagerComponent
+    ProjectsManagerComponent,
+    ToTextPipe,
+    DropdownDisplayPipe
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        PanelModule,
-        FormsModule,
-        UIShellModule,
-        TabsModule,
-        ButtonModule,
-        CheckboxModule,
-        InputModule,
-        NumberModule,
-        DropdownModule,
-        HttpClientModule,
-        DialogModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    PanelModule,
+    FormsModule,
+    UIShellModule,
+    TabsModule,
+    ButtonModule,
+    CheckboxModule,
+    InputModule,
+    NumberModule,
+    DropdownModule,
+    HttpClientModule,
+    DialogModule,
+    DatePickerInputModule,
+    DatePickerModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 
     constructor(persist: LocalStoragePersistenceService, bindings: ConfigurationFileBindingService) {
+
+
+
     }
 
 

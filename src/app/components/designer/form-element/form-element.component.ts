@@ -13,11 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
-import {FormItem} from "../../../services/form-manager.service";
+import {FormItem, FormManagerService} from "../../../services/form-manager.service";
 import {DesignerEventsService} from "../../../services/designer-events.service";
 import {Subscription} from "rxjs";
-import {ConfigurationFileService} from "../../../services/configuration-file.service";
+import {ConfigurationFile, ConfigurationFileService} from "../../../services/configuration-file.service";
 import * as _ from 'lodash';
+import {ConfigFileBinding, ConfigurationFileBindingService} from "../../../services/configuration-file-binding.service";
+import {ChangeObserver} from "../../../services/designer.service";
 
 @Component({
   selector: 'app-form-element',
@@ -29,10 +31,13 @@ export class FormElementComponent implements OnDestroy, OnChanges {
   #events = inject(DesignerEventsService);
   #elRef = inject(ElementRef);
   #configFile = inject(ConfigurationFileService);
+  #formManager = inject(FormManagerService);
+
 
   @Input() element : FormItem;
   private subs = new Subscription();
 
+  configsBound : ConfigurationFile[] = [];
   dropdownItems : any[]= [];
 
   constructor() {
@@ -48,17 +53,32 @@ export class FormElementComponent implements OnDestroy, OnChanges {
       }
 
     }));
+
+    this.subs.add(this.#configFile.getOnConfigurationFilesChanged().subscribe((changes: ConfigurationFile[]) => {
+          this.configsBound = this.#configFile.getFilesByKey(this.element?.key || '');
+    }));
+
+    this.subs.add(this.#formManager.getOnFormItemChanged().subscribe((change: ChangeObserver<FormItem>)=> {
+
+        if (change.data === this.element) {
+            this._onElementChanged();
+        }
+    }));
+
+  }
+
+  private _onElementChanged() {
+    if (this.element?.display === 'dropdown') {
+      const items = this.#configFile.getValue(this.element.displayOptions.configName, this.element.displayOptions.dataKey);
+      const [k,v] = [_.keys(items), _.values(items)];
+      this.dropdownItems = _.map(k,(key, index) => ({ content: v[index], key: key }));
+    }
+    this.configsBound = this.#configFile.getFilesByKey(this.element.key);
   }
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes && changes['element']?.currentValue) {
-            if (this.element?.display === 'dropdown') {
-                console.log(this.element);
-                const items = this.#configFile.getValue(this.element.displayOptions.configName, this.element.displayOptions.dataKey);
-                const [k,v] = [_.keys(items), _.values(items)];
-                this.dropdownItems = _.map(k,(key, index) => ({ content: v[index], key: k }));
-                console.log(this.dropdownItems,k,v,items);
-            }
+            this._onElementChanged();
       }
   }
 
@@ -70,11 +90,28 @@ export class FormElementComponent implements OnDestroy, OnChanges {
       this.#events.fireFormAction('showMarkDown', this.element);
   }
 
+  setTextValue(formItem: FormItem, newValue: string) {
+        if (formItem.type === 'string-array') {
+             formItem.value = newValue.split(',');
+        } else {
+           formItem.value = newValue;
+        }
+
+  }
+
   ngOnDestroy() {
       this.subs.unsubscribe();
   }
 
   private getRef() {
     return this.#elRef.nativeElement
+  }
+
+  setDate(element: FormItem, $event: any) {
+        element.value = (new Date($event)).toISOString();
+  }
+
+  setDropdownValue(element: FormItem, $event: any) {
+        element.value = $event.item.key;
   }
 }

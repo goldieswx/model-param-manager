@@ -43,7 +43,9 @@ export class FormElementEditorComponent implements  OnDestroy, OnInit {
           { content: 'String', key: 'string' },
           { content: 'Number', key: 'number' },
           { content: 'Boolean', key: 'boolean' },
-          { content: 'Date', key: 'date' } ];
+          { content: 'Date', key: 'date' } ,
+          { content: 'String Array', key: 'string-array' },
+          { content: 'Number Array', key: 'number-array' } ];
 
     readonly availableDisplays : any = [
         { content: 'Checkbox', key: 'checkbox' },
@@ -93,6 +95,7 @@ export class FormElementEditorComponent implements  OnDestroy, OnInit {
       const fullKey = _.compact([e.parentKey, e.key]).join('.');
       const configFile = e.configFile.machineName;
       this.formItem.displayOptions = { dataKey: fullKey, configName: configFile };
+      this.#formManager.triggerFormItemChanges(this.formItem,'update');
   }
 
   setType(e: any) {

@@ -1,5 +1,5 @@
 <div class="main">
-  <ul data-accordion class="bx--accordion sidebar">
+  <ul data-accordion class="bx--accordion sidebar" *ngIf="!readOnlyInterface">
     <li data-accordion-item class="bx--accordion__item" [ngClass]="{ 'bx--accordion__item--active': sideDisplay.formElementEditor }">
       <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane2" (click)="sideDisplay.formElementEditor = !sideDisplay?.formElementEditor">
         <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
@@ -50,29 +50,30 @@
 
   </ul>
 
-
-
-
-  <div class="design-pad" >
+  <div class="design-pad" [ngClass]="{ readonly : readOnlyInterface }"  >
 
     <div class="toolbar" *ngIf="showToolbar"><app-toolbar></app-toolbar></div>
 
     <div style="display: flex;">
-      <div data-tabs class="bx--tabs bx--tabs--container tabs" (mousemove)="showManageButtons($event)" (mouseleave)="hideManageButtons()">
+      <div data-tabs class="bx--tabs bx--tabs--container tabs" >
 
         <ul class="bx--tabs__nav bx--tabs__nav--hidden"   >
           <li class="bx--tabs__nav-item" [ngClass]="{ 'bx--tabs__nav-item--selected': section === currentSection }"   *ngFor="let section of sections;" (click)="onSectionSelect(section)" >
 
-            <input class="bx--tabs__nav-link editable" [(ngModel)]="section.name" *ngIf="section === currentSection" (ngModelChange)="updateSectionName()" >
+            <input [disabled]="readOnlyInterface" class="bx--tabs__nav-link editable" [(ngModel)]="section.name" *ngIf="section === currentSection" (ngModelChange)="updateSectionName()" >
             <a class="bx--tabs__nav-link" href="javascript:void(0)" *ngIf="section !== currentSection">{{ section.name }}</a>
           </li>
         </ul>
       </div>
 
-      <div class="add-remove-section" *ngIf="manageButtonsShown || true " (mouseenter)="showManageButtons(null)"  style="display: flex; height: 2rem;">
+      <div class="add-remove-section" *ngIf="!readOnlyInterface"   style="display: flex; height: 2rem;">
         <button [ibmButton]="'danger'" class="droppable-remove" size="sm" *ngIf="sections.length > 1" (click)="removeCurrentSection()">Remove</button>
         <button [ibmButton]="'primary'" size="sm" (click)="addSection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
         <button [ibmButton]="'primary'" size="sm" (click)="toggleToolbar()"><i class="fa-solid fa-screwdriver-wrench"></i> </button>
+      </div>
+
+      <div *ngIf="readOnlyInterface" style="float: right">
+            <button [ibmButton]="'primary'" (click)="sendAllOutputModules()">Save</button>
       </div>
 
     </div>

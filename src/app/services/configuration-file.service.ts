@@ -96,7 +96,6 @@ export class ConfigurationFileService {
   }
 
   public getValue(configFileName: string, key: string) : any {
-        debugger;
         const config = _.find(this._configurationFile, { machineName: configFileName });
         if (config) {
           const parsedFile = JSON.parse(config.contents);
@@ -105,4 +104,25 @@ export class ConfigurationFileService {
   }
 
 
+  public updateFile(config: ConfigurationFile) {
+      const index = _.findIndex(this._configurationFile, { machineName: config.machineName });
+      if (index >= 0) {
+        this._configurationFile[index] = config;
+        this.setFiles();
+      }
+  }
+
+  getFilesByKey(key: string): ConfigurationFile[] {
+
+       const result : ConfigurationFile[] = [];
+       _.each(this._configurationFile, (configFile: ConfigurationFile) => {
+          const parsedFile = JSON.parse(configFile.contents);
+          if (_.has(parsedFile, key)) {
+                result.push(configFile);
+          }
+       });
+
+       return result;
+
+  }
 }

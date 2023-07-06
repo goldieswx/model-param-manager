@@ -34,6 +34,13 @@
     <app-jsonview [data]="config.contents" [configFile]="this.config"></app-jsonview>
   </section>
 
+  <div class="json-contents">
+  <div class="txa"  >
+    <textarea #textEditor style="width: 200px; height: 200px;"></textarea>
+  </div>
+    <button ibmButton="secondary" size="sm" (click)="updateJsonContents()">Update</button>
+  </div>
+
 </ng-container>
 
 

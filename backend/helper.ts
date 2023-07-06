@@ -1,6 +1,9 @@
 import fs from 'fs';
 
-
+export const paths = {
+   storage: 'storage',
+   projects: 'projects'
+}
 
 const {promises: {readFile, writeFile, unlink}} = require("fs");
 
@@ -40,7 +43,7 @@ export const getProject : (projectId: string) => Promise<ConfigProject> = (proje
       if (projectId.endsWith('.json')) {
           projectId = projectId.slice(0, - ('.json'.length));
       }
-      return readFile('./projects/' + projectId + '.json').then((fileBuffer : any) => {
+      return readFile(`./${paths.projects}/` + projectId + '.json').then((fileBuffer : any) => {
           return { ...JSON.parse(fileBuffer.toString()) as ConfigProject, projectId };
       }).catch((error: any) => {
           console.log('error while reading project ' + projectId, error.message);
@@ -54,7 +57,7 @@ export const deleteProject : (projectId: string) => Promise<any> = (projectId: s
     if (projectId.endsWith('.json')) {
       projectId = projectId.slice(0, - ('.json'.length));
     }
-    return unlink('./projects/' + projectId + '.json')
+    return unlink(`./${paths.projects}/` + projectId + '.json')
 
 };
 
@@ -63,7 +66,7 @@ export const updateProject : (projectId: string, contents: any) => Promise<any> 
   if (projectId.endsWith('.json')) {
     projectId = projectId.slice(0, - ('.json'.length));
   }
-  return writeFile('./projects/' + projectId + '.json', JSON.stringify(contents));
+  return writeFile(`./${paths.projects}/` + projectId + '.json', JSON.stringify(contents));
 
 };
 
@@ -74,7 +77,7 @@ export const getStorage : (key: string) => Promise<any> = (key: string) => {
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return readFile('./storage/' + key + '.json').then((fileBuffer : any) => {
+  return readFile(`./${paths.storage}/` + key + '.json').then((fileBuffer : any) => {
     return  JSON.parse(fileBuffer.toString());
   }).catch((error: any) => {
     console.log('error while reading storage ' + key, error.message);
@@ -88,7 +91,7 @@ export const deleteStorage : (key: string) => Promise<any> = (key: string) =>  {
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return unlink('./storage/' + key + '.json')
+  return unlink(`./${paths.storage}/` + key + '.json')
 
 };
 
@@ -97,7 +100,7 @@ export const updateStorage : (key: string, contents: any) => Promise<any> = (key
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return writeFile('./storage/' + key + '.json', JSON.stringify(contents));
+  return writeFile(`./${paths.storage}/` + key + '.json', JSON.stringify(contents));
 
 };
 

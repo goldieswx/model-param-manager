@@ -17,6 +17,7 @@ import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core'
 import * as _ from 'lodash';
 import {FormManagerService} from "../../../services/form-manager.service";
 import {DesignerService, Section, Subsection} from "../../../services/designer.service";
+import {InitializationService} from "../../../services/initialization.service";
 
 
 @Component({
@@ -29,8 +30,12 @@ export class DesignSectionComponent implements OnChanges {
     @Input() section : Section;
     #formManager = inject(FormManagerService);
     #designer = inject(DesignerService);
+    #config = inject(InitializationService);
 
-    public currentSubsection : Subsection = null;
+    readOnlyInterface = (this.#config.getConfig() || { readOnly: true}).readOnly;
+
+
+  public currentSubsection : Subsection = null;
 
     public addSubsection() {
         this.#designer.addSubSection(this.section,{
