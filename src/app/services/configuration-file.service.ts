@@ -69,7 +69,7 @@ export class ConfigurationFileService {
           file = {
             uri: null,
             contents: null, // JSON.stringify(dataMock2),
-            machineName: 'renameMe',
+            machineName: '',
             type: 'json'
           }
        }
@@ -90,7 +90,7 @@ export class ConfigurationFileService {
   removeConfigFile(config: ConfigurationFile) {
       const index = this._configurationFile.indexOf(config);
       if (index >= 0) {
-        this._configurationFile.splice(index);
+        this._configurationFile.splice(index,1);
         this.setFiles();
       }
   }
@@ -112,7 +112,7 @@ export class ConfigurationFileService {
       }
   }
 
-  getFilesByKey(key: string): ConfigurationFile[] {
+  public getFilesByKey(key: string): ConfigurationFile[] {
 
        const result : ConfigurationFile[] = [];
        _.each(this._configurationFile, (configFile: ConfigurationFile) => {
@@ -125,4 +125,6 @@ export class ConfigurationFileService {
        return result;
 
   }
+
+
 }

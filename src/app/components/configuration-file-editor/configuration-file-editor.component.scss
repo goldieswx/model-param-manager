@@ -28,7 +28,22 @@
     margin-top: 1.5rem;
   }
 
+  .hidden {
+    position: absolute !important;
+    left: -99999px;
+  }
 
+  /*
+  ::ng-deep  .CodeMirror-gutters {
+    margin-left: 2rem;
+  }
+  ::ng-deep .CodeMirror-line {
+    margin-left: 2.5rem !important;
+  }
 
+  ::ng-deep .CodeMirror-cursors {
+    margin-left: 2.5rem !important;
+  }
+*/
 
 }

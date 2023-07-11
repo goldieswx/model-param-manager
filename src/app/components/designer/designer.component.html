@@ -25,7 +25,9 @@
           <div class="json-view" *ngFor="let configurationFile of configurationFiles;">
             <app-configuration-file-editor [config]="configurationFile"></app-configuration-file-editor>
           </div>
-          <div class="plus" >
+          <div class="plus" *ngIf="!disallowAdd">
+            <!-- DISABLE THIS UNTIL THE LAST CONFIG FILE HAS CONTENTS -->
+            <br>
             <i (click)="addConfigurationFile()" class="fa-solid fa-circle-plus"></i>
           </div>
       </div>
@@ -42,6 +44,7 @@
         <div class="json-view" *ngFor="let outputModule of outputModules;">
             <app-output-module [module]="outputModule"></app-output-module>
         </div>
+        <br>
         <div class="plus" >
           <i (click)="addOutputModule()" class="fa-solid fa-circle-plus"></i>
         </div>
@@ -67,7 +70,9 @@
       </div>
 
       <div class="add-remove-section" *ngIf="!readOnlyInterface"   style="display: flex; height: 2rem;">
-        <button [ibmButton]="'danger'" class="droppable-remove" size="sm" *ngIf="sections.length > 1" (click)="removeCurrentSection()">Remove</button>
+        <button [ibmButton]="'danger'" [ngClass]="{ hidden: !startedDragging }" class="droppable-remove" size="sm" ><i class="fa-solid fa-trash"></i></button>
+
+        <button [ibmButton]="'danger'"  size="sm" *ngIf="sections.length > 1" (click)="removeCurrentSection()">Remove</button>
         <button [ibmButton]="'primary'" size="sm" (click)="addSection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
         <button [ibmButton]="'primary'" size="sm" (click)="toggleToolbar()"><i class="fa-solid fa-screwdriver-wrench"></i> </button>
       </div>

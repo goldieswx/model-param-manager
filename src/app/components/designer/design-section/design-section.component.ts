@@ -42,11 +42,13 @@ export class DesignSectionComponent implements OnChanges {
           name: 'New subsection',
           form: this.#formManager.getEmptyDesignForm()
         });
+        this.currentSubsection = this.currentSubsection || _.first(this.section.subSections);
     }
 
     public removeSubsection() {
         if (this.currentSubsection) {
           this.#designer.removeSubsection(this.section, this.currentSubsection);
+          this.currentSubsection = _.first(this.section.subSections) || null;
         }
     }
 

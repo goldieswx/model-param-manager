@@ -75,5 +75,11 @@ export class ConfigurationFileBindingService {
         return this.$_bindingsChanged.asObservable();
   }
 
-
+  /* propagate key value in multi-bound keys. */
+  public syncKeys(key: string, value: any) {
+       const binding =  _.find(this.bindings, { originKey: key });
+       if (binding) {
+            binding.mapping.map((formItem) => formItem.value = value );
+       }
+  }
 }

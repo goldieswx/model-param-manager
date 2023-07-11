@@ -18,12 +18,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-  ButtonModule,
-  CheckboxModule, DatePickerInputModule, DatePickerModule, DialogModule, DropdownModule,
-  InputModule, NumberModule,
-  PanelModule,
-  TabsModule,
-  UIShellModule
+    ButtonModule,
+    CheckboxModule, DatePickerInputModule, DatePickerModule, DialogModule, DropdownModule,
+    InputModule, NumberModule,
+    PanelModule,
+    TabsModule, TimePickerModule,
+    UIShellModule
 } from "carbon-components-angular";
 import { JsonviewComponent } from './components/jsonview/jsonview.component';
 import {FormsModule} from "@angular/forms";
@@ -44,6 +44,8 @@ import {ConfigurationFileBindingService} from "./services/configuration-file-bin
 import { ProjectsManagerComponent } from './components/projects-manager/projects-manager.component';
 import { ToTextPipe } from './components/designer/form-element/to-text.pipe';
 import { DropdownDisplayPipe } from './pipes/dropdown-display.pipe';
+import { ToDatePipe } from './components/designer/form-element/to-date.pipe';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -62,25 +64,28 @@ import { DropdownDisplayPipe } from './pipes/dropdown-display.pipe';
     ToolbarComponent,
     ProjectsManagerComponent,
     ToTextPipe,
-    DropdownDisplayPipe
+    DropdownDisplayPipe,
+    ToDatePipe,
+    NotificationComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    PanelModule,
-    FormsModule,
-    UIShellModule,
-    TabsModule,
-    ButtonModule,
-    CheckboxModule,
-    InputModule,
-    NumberModule,
-    DropdownModule,
-    HttpClientModule,
-    DialogModule,
-    DatePickerInputModule,
-    DatePickerModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        PanelModule,
+        FormsModule,
+        UIShellModule,
+        TabsModule,
+        ButtonModule,
+        CheckboxModule,
+        InputModule,
+        NumberModule,
+        DropdownModule,
+        HttpClientModule,
+        DialogModule,
+        DatePickerInputModule,
+        DatePickerModule,
+        TimePickerModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -14,7 +14,7 @@
 
     <br>
     <div class="add-remove-subsection" *ngIf="!readOnlyInterface">
-      <button style="padding: 0 0.5rem;" *ngIf="section?.subSections?.length" [ibmButton]="'danger'" class="droppable-remove" size="sm" (click)="removeSubsection()">Remove</button>
+      <button style="padding: 0 0.5rem;" *ngIf="section?.subSections?.length" [ibmButton]="'danger'"  size="sm" (click)="removeSubsection()">Remove</button>
       <button  style="padding: 0 0.5rem;"[ibmButton]="'secondary'" size="sm" (click)="addSubsection()"><i class="fa-solid fa-plus"></i> &nbsp; Add</button>
     </div>
 

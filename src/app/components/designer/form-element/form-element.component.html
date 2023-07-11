@@ -36,7 +36,11 @@
   </ng-container>
 
   <ng-container *ngSwitchCase="'number'">
-    <ibm-number  [invalid]="!configsBound.length" [label]="element.label" [(ngModel)]="element.value" [size]="'sm'">
+    <ibm-number  [invalid]="!configsBound.length"
+                 [label]="element.label"
+                 [ngModel]="element.value"
+                 (ngModelChange)="setNumberValue(element, $event)"
+                 [size]="'sm'">
 
     </ibm-number>
   </ng-container>
@@ -55,6 +59,10 @@
   <ibm-date-picker  [invalid]="!configsBound.length" *ngSwitchCase="'datepicker'" [size]="'sm'" [label]="element.label"
     [ngModel]="element.value" (ngModelChange)="setDate(element, $event)">
   </ibm-date-picker>
+
+  <ibm-timepicker  [invalid]="!configsBound.length" *ngSwitchCase="'timepicker'" [size]="'sm'" [label]="element.label"
+                    [ngModel]="element.value | toDate" (ngModelChange)="setTime(element, $event)">
+  </ibm-timepicker>
 
   <ng-container *ngSwitchDefault>
       <p>

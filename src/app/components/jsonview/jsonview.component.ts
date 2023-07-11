@@ -19,7 +19,7 @@ import {
   inject,
   Input,
   NgZone,
-  OnChanges,
+  OnChanges, OnDestroy,
   SimpleChanges,
   ViewChildren
 } from '@angular/core';
@@ -36,7 +36,7 @@ import {ConfigurationFileBindingService} from "../../services/configuration-file
   templateUrl: './jsonview.component.html',
   styleUrls: ['./jsonview.component.scss']
 })
-export class JsonviewComponent implements  AfterViewInit, OnChanges {
+export class JsonviewComponent implements  AfterViewInit, OnChanges, OnDestroy {
 
   #ngZone = inject(NgZone);
   #events = inject(DesignerEventsService);
@@ -51,6 +51,10 @@ export class JsonviewComponent implements  AfterViewInit, OnChanges {
       if (changes && changes['data']?.currentValue) {
           this.parsedData = JSON.parse(this.data);
       }
+  }
+
+  ngOnDestroy() {
+    interact.default('.draggable').unset();
   }
 
   ngAfterViewInit() {

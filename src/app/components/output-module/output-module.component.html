@@ -3,28 +3,31 @@
   <div style="display: flex; flex-direction: row;">
     <div class="machine-name">
       <ibm-label> Module Name
-        <input ibmText size="sm" [(ngModel)]="module.name" (ngModelChange)="update()" [disabled]="module.name==='default'">
+        <input ibmText size="sm" [ngModel]="module.name" [disabled]="validated" (ngModelChange)="setPrivateModuleName($event)" >
       </ibm-label>
     </div>
 
-    <div class="config-uri-edit" >
+    <div class="config-uri-edit" *ngIf="validated">
       <ibm-label>
         Send Url
-        <input  ibmText size="sm" [(ngModel)]="module.retrieveUri" (ngModelChange)="update()" placeholder="http://" >
+        <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.persistUri" (ngModelChange)="update()" placeholder="http://" >
       </ibm-label>
     </div>
 
-      <ibm-dropdown style="margin-left: .5rem;"
-        [label]="'Url Verb'"            [size]="'sm'" >
-        <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
-      </ibm-dropdown>
+
+
+    <div class="http-action"
+         *ngIf="validated"
+         (click)="module.retrieveHttpAction = cycleAction(module.persistHttpAction)">
+        {{ httpActions | dropdownDisplay : module.persistHttpAction }}
+    </div>
 
 
 
-    <div class="fetch-button">
+    <div class="fetch-button" *ngIf="validated">
       <!-- <button ibmButton="primary" size="sm" [disabled]="!!config.contents" (click)="getConfigFile(config)">Get</button> -->
 
-      <ibm-overflow-menu
+      <ibm-overflow-menu *ngIf="validName"
         [placement]="'bottom'"
         [flip]="false" >
         <ibm-overflow-menu-option (click)="send(module)" >Send</ibm-overflow-menu-option>
@@ -33,22 +36,27 @@
 
     </div>
 
+    <div  *ngIf="!validated" style="flex: 1; text-align: right; margin-top: 1.5rem;">
+        <button size="sm" [ibmButton]="'primary'" (click)="updateModuleName(_moduleName)" [disabled]="!validName">Set</button>
+    </div>
+
   </div>
 
-  <div style="display: flex; flex-direction: row; margin-top: .5rem;">
+  <div style="display: flex; flex-direction: row; margin-top: .5rem;" *ngIf="validated">
 
     <div class="spacer machine-name"></div>
     <div class="config-uri-edit" >
       <ibm-label>
         Retreive Url
-        <input  ibmText size="sm" [(ngModel)]="module.persistUri" (ngModelChange)="update()" placeholder="http://" >
+        <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.retrieveUri" (ngModelChange)="update()" placeholder="http://" >
       </ibm-label>
     </div>
 
-    <ibm-dropdown style="margin-left: .5rem;"
-                  [label]="'Url Verb'"            [size]="'sm'" >
-      <ibm-dropdown-list [items]="httpActions"></ibm-dropdown-list>
-    </ibm-dropdown>
+    <div class="http-action"
+         *ngIf="validated"
+         (click)="module.retrieveHttpAction = cycleAction(module.retrieveHttpAction)">
+      {{ httpActions | dropdownDisplay : module.retrieveHttpAction }}
+    </div>
 
     <ibm-overflow-menu
       [placement]="'bottom'"
@@ -56,5 +64,7 @@
       <ibm-overflow-menu-option (click)="read(module)" >Get</ibm-overflow-menu-option>
     </ibm-overflow-menu>
   </div>
+
+
 
 </div>

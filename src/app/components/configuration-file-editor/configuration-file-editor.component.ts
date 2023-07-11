@@ -15,6 +15,12 @@ limitations under the License. */
 import {AfterViewInit, Component, inject, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {ConfigurationFile, ConfigurationFileService} from "../../services/configuration-file.service";
 import * as CodeMirror from 'codemirror';
+import * as _ from 'lodash';
+import {NotificationService} from "../../services/notification.service";
+
+declare let require: any;
+const jsonLint = require('json-lint');
+const beautify = require('beautify');
 
 @Component({
   selector: 'app-configuration-file-editor',
@@ -23,41 +29,41 @@ import * as CodeMirror from 'codemirror';
 })
 export class ConfigurationFileEditorComponent implements AfterViewInit, OnChanges {
 
-  @Input() config : ConfigurationFile;
+  @Input() config: ConfigurationFile;
 
   #configService = inject(ConfigurationFileService);
+  #notification = inject(NotificationService);
   @ViewChild('textEditor') textEditor: any;
 
-  private _codeMirror : any;
+  hideJsonContents = true;
+  validMachineName = true;
 
-  /*
-
-          console.log("setting config file value", t);
-        this._codeMirror.setValue(t);
-   */
+  private _codeMirror: any;
 
   ngOnChanges(changes: SimpleChanges) {
-
-      if (changes && changes['config']) {
-          console.log('changes', this.config.contents);
-           setTimeout(() => this._codeMirror.setValue(this.config.contents), 500);
+    if (changes && changes['config']) {
+      this.validMachineName = !!(this.config.machineName && this.config.machineName !== '');
+      if (this.config?.contents) {
+        this.config.contents = JSON.stringify(JSON.parse(this.config.contents));
+        setTimeout(() => this._codeMirror.setValue(beautify(this.config.contents || '', {format: 'json'})), 500);
       }
-
+    }
   }
 
   getConfigFile(config: ConfigurationFile) {
-      this.#configService.getFileContents(config.uri).subscribe((t) => {
-        config.contents = t;
-        this.updateFiles();
-      } );
+    this.#configService.getFileContents(config.uri).subscribe((t) => {
+      config.contents = t;
+      this.updateFiles();
+      setTimeout(() => this._codeMirror.setValue(beautify(this.config.contents || '', {format: 'json'})), 500);
+    });
   }
 
   deleteConfigFile(config: ConfigurationFile) {
-      this.#configService.removeConfigFile(config);
+    this.#configService.removeConfigFile(config);
   }
 
   updateFiles() {
-      this.#configService.setFiles();
+    this.#configService.setFiles();
   }
 
   private initCodeEditor() {
@@ -65,8 +71,7 @@ export class ConfigurationFileEditorComponent implements AfterViewInit, OnChange
     if (this.textEditor) {
       this._codeMirror = CodeMirror.fromTextArea(this.textEditor.nativeElement, {
         lineNumbers: true,
-        lineWrapping: true,
-        mode: "nginx",
+        lineWrapping: false,
         matchBrackets: true
       });
     } else {
@@ -75,11 +80,58 @@ export class ConfigurationFileEditorComponent implements AfterViewInit, OnChange
   }
 
   ngAfterViewInit() {
-      this.initCodeEditor();
+    this.initCodeEditor();
   }
 
   updateJsonContents() {
-     this.config.contents = this._codeMirror.getValue();
+
+    const contents = this._codeMirror.getValue();
+    const parsed = jsonLint(contents);
+
+    if (parsed && parsed.error) {
+
+      this.#notification.notify({
+        title: 'Error in JSON',
+        message:  'Error in json file (line ' + parsed.line + ') ' + parsed.error,
+        type: 'error'})
+
+      this._codeMirror.getDoc().markText({line: (parsed.line - 1), ch: 0}, {
+        line: (parsed.line - 1),
+        ch: 999
+      }, {clearOnEnter: true, css: "background-color: #cc333388"});
+
+
+    } else {
+      this.config.contents = beautify(JSON.stringify(JSON.parse(contents)), {format: 'json'});
       this.#configService.updateFile(this.config);
+      this._codeMirror.setValue(this.config.contents || '');
+
+      this.#notification.notify({
+        title: 'Configuration file modified',
+        message: `The  ${this.config.machineName} configuration file was successfully modified`,
+        type: 'info'})
+
+    }
+
+  }
+
+  _checkValidMachineName(value: string): boolean {
+        if (value && value.length) {
+            return !_.find(this.#configService.getConfigurationFiles(),{ machineName: value});
+        }
+        return false;
+  }
+
+  updateMachineName(newValue: string) {
+      this.validMachineName = this._checkValidMachineName(newValue);
+      if (this.validMachineName) {
+        this.config.machineName = newValue;
+        this.updateFiles();
+      }
+  }
+
+
+  toggleJsonViewer() {
+    this.hideJsonContents = !this.hideJsonContents;
   }
 }

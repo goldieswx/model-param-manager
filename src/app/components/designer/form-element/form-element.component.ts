@@ -32,6 +32,7 @@ export class FormElementComponent implements OnDestroy, OnChanges {
   #elRef = inject(ElementRef);
   #configFile = inject(ConfigurationFileService);
   #formManager = inject(FormManagerService);
+  #configBindings = inject(ConfigurationFileBindingService);
 
 
   @Input() element : FormItem;
@@ -92,9 +93,10 @@ export class FormElementComponent implements OnDestroy, OnChanges {
 
   setTextValue(formItem: FormItem, newValue: string) {
         if (formItem.type === 'string-array') {
-             formItem.value = newValue.split(',');
+           formItem.value = newValue.split(',');
         } else {
            formItem.value = newValue;
+           this.#configBindings.syncKeys(formItem.key, formItem.value);
         }
 
   }
@@ -109,9 +111,24 @@ export class FormElementComponent implements OnDestroy, OnChanges {
 
   setDate(element: FormItem, $event: any) {
         element.value = (new Date($event)).toISOString();
+        this.#configBindings.syncKeys(element.key, element.value);
   }
 
   setDropdownValue(element: FormItem, $event: any) {
         element.value = $event.item.key;
+       this.#configBindings.syncKeys(element.key, element.value);
+  }
+
+  setNumberValue(element: FormItem, $event: any) {
+        element.value = $event;
+        this.#configBindings.syncKeys(element.key, element.value);
+  }
+
+  setTime(element: FormItem, $event: string) {
+    const value = new Date(element.value);
+    const hrMin =  $event.split(':');
+    (<Date>value).setHours(parseInt(hrMin[0]), parseInt(hrMin[1]));
+    element.value = value.toISOString();
+    this.#configBindings.syncKeys(element.key, element.value);
   }
 }

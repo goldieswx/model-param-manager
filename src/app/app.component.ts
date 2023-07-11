@@ -12,9 +12,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {InitializationService} from "./services/initialization.service";
 import {Router} from "@angular/router";
+
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,8 @@ import {Router} from "@angular/router";
 export class AppComponent {
   title = 'model-param-manager';
   applicationLoaded = false;
+
+
 
   constructor(public init : InitializationService, private router: Router) {
       init.loadConfig();

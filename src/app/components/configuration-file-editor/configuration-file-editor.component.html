@@ -1,15 +1,16 @@
-<ng-container *ngIf="config?.machineName">
+<ng-container *ngIf="config">
   <div style="display: flex; flex-direction: row;">
     <div class="machine-name">
       <ibm-label> Machine Name
-        <input ibmText size="sm" [(ngModel)]="config.machineName " (ngModelChange)="updateFiles()" [disabled]="!!config.contents" placeholder="http://" >
+        <input
+          ibmText size="sm"  [ngModel]="config.machineName " (ngModelChange)="updateMachineName($event)" [disabled]="!!config.contents" placeholder="machineName" >
       </ibm-label>
     </div>
 
     <div class="config-uri-edit" >
       <ibm-label>
         Url
-        <input  ibmText size="sm" [(ngModel)]="config.uri"
+        <input   ibmText size="sm" [(ngModel)]="config.uri"
                 (ngModelChange)="updateFiles()"
                 [disabled]="!!config.contents" placeholder="http://" >
 
@@ -18,24 +19,24 @@
     <div class="fetch-button">
        <!-- <button ibmButton="primary" size="sm" [disabled]="!!config.contents" (click)="getConfigFile(config)">Get</button> -->
 
-      <ibm-overflow-menu
+      <ibm-overflow-menu *ngIf="validMachineName"
         [placement]="'bottom'"
         [flip]="false" >
         <ibm-overflow-menu-option [innerClass]="'bx--overflow-menu-options__option--danger'"
-                                  [disabled]="!!config.contents" (click)="getConfigFile(config)"
+                                  [disabled]="!validMachineName || !!config.contents" (click)="getConfigFile(config)"
         >Get</ibm-overflow-menu-option>
-        <ibm-overflow-menu-option [disabled]="!!config.contents" >Paste contents</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option  [disabled]="!validMachineName" (click)="toggleJsonViewer()">Json Viewer</ibm-overflow-menu-option>
         <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" (click)="deleteConfigFile(config)">Delete</ibm-overflow-menu-option>
       </ibm-overflow-menu>
 
     </div>
   </div>
-  <section>
+  <section *ngIf="validMachineName">
     <app-jsonview [data]="config.contents" [configFile]="this.config"></app-jsonview>
   </section>
 
-  <div class="json-contents">
-  <div class="txa"  >
+  <div class="json-contents" [ngClass]="{ hidden: hideJsonContents }">
+  <div class="txa"  style="width: calc(30vw - 2rem); overflow: auto;">
     <textarea #textEditor style="width: 200px; height: 200px;"></textarea>
   </div>
     <button ibmButton="secondary" size="sm" (click)="updateJsonContents()">Update</button>

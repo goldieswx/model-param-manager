@@ -14,18 +14,19 @@ limitations under the License. */
 
 
 import {inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, catchError, Observable, throwError} from "rxjs";
 import {DesignerService, Section} from "./designer.service";
 import * as _ from 'lodash';
 import {HttpClient} from "@angular/common/http";
 import {FormItem} from "./form-manager.service";
+import {NotificationService} from "./notification.service";
 
 export interface OutputModule {
       name: string;
-      retrieveHttpAction ?: 'POST' | 'PUT' | 'GET' | string;
+      retrieveHttpAction ?: 'post' | 'put' | 'get' | string;
       retrieveUri ?: string;
       persistUri ?: string;
-      persistHttpAction ?: 'POST' | 'PUT' | 'GET' | string;
+      persistHttpAction ?: 'post' | 'put' | 'get' | string;
 }
 
 export interface OutputProcessedData {
@@ -43,12 +44,13 @@ export class OutputModuleService {
   private $outputModules = new BehaviorSubject<OutputModule[]>([]);
 
   #designer = inject(DesignerService);
+  #notify = inject(NotificationService);
 
   constructor(private http: HttpClient) {
 
       const storedModules: OutputModule[] = JSON.parse(localStorage.getItem('output-modules') ) || [{
         name: 'default',
-        httpAction: 'POST' }] ;
+        httpAction: 'post' }] ;
 
       this.getOnOutputModulesChanged().subscribe((modules) => {
               localStorage.setItem('output-modules', JSON.stringify(modules));
@@ -59,7 +61,7 @@ export class OutputModuleService {
 
   public addOutputModule() {
       this._outputModules.push({
-           name: 'unnamed', retrieveHttpAction: 'GET', persistHttpAction: 'POST'
+           name: '', retrieveHttpAction: 'get', persistHttpAction: 'post'
       });
       this.setModules();
   }
@@ -107,11 +109,17 @@ export class OutputModuleService {
               });
           });
 
-          console.log('processed result', result);
-
-          this.http.post(module.persistUri, result).subscribe((data) => {
+          this.http.post(module.persistUri, result).pipe(
+                catchError((err) => {
+                  this.#notify.notify({ title: 'Error Saving Configuration', message: err.message, type: 'error' })
+                  return throwError(() => err);
+                })
+            ).subscribe((data) => {
               console.log('posted ', data);
-          });
+              this.#notify.notify({
+                title: 'Configuration succesfully saved',
+                message: `The [${module.name}] configuration settings were successfully saved`, type: 'success', timeOutMs: 5000 })
+              });
 
           return {
               result
@@ -142,7 +150,12 @@ export class OutputModuleService {
   public readFromOutputModuleData(module: OutputModule) {
 
 
-        this.http.get(module.retrieveUri).subscribe((data) => {
+        this.http.get(module.retrieveUri).pipe(
+                  catchError((err) => {
+                        this.#notify.notify({ title: 'Error Reading configuration', message: err.message, type: 'error' })
+                        return throwError(() => err);
+                  })
+                ).subscribe((data) => {
               const allKeys : string[] = [];
               this._keysDeep(data, allKeys);
 
@@ -164,6 +177,9 @@ export class OutputModuleService {
                 });
               });
 
+             this.#notify.notify({
+                title: 'Configuration succesfully read',
+                message: `The [${module.name}] configuration settings were successfully loaded`, type: 'info', timeOutMs: 5000 })
         });
   }
 

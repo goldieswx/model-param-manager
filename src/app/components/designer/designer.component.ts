@@ -52,6 +52,8 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   showToolbar = false;
 
   currentProject: ConfigProject = null;
+  disallowAdd: boolean;
+  startedDragging = false;
 
   constructor(private router: Router, activeRoute: ActivatedRoute) {
 
@@ -77,17 +79,31 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
               this.#designer.setSections(this.sections);
               this.currentSection = _.first(this.sections) || null;
 
+              this.disallowAdd = !!_.find(this.configurationFiles, (configurationFile : ConfigurationFile) => !configurationFile.machineName)
+
               if (this.readOnlyInterface) {
                 this.#outputModules.readFromAllOutputModuleData();
               }
 
             });
       }));
+
+      this.subs.add(this.#configFiles.getOnConfigurationFilesChanged().subscribe((configuration: ConfigurationFile[]) => {
+             const found =  _.find(configuration, (configurationFile : ConfigurationFile) => {
+               return (!(configurationFile.machineName  && configurationFile.machineName?.length) ||
+               !(configurationFile.contents && configurationFile.contents?.length));
+             } );
+             console.log('found', found, configuration);
+        this.disallowAdd = !!found;
+      }));
   }
 
   ngOnDestroy() {
       this.saveProject()
       this.subs.unsubscribe();
+      interact.default('label').unset();
+      interact.default('.droppable-remove').unset();
+      interact.default('.droppable').unset();
   }
 
   private saveProject() {
@@ -97,6 +113,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
   }
 
   addConfigurationFile() {
+     this.disallowAdd = true;
      this.#configFiles.addConfigurationFile();
   }
 
@@ -111,6 +128,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
   removeCurrentSection() {
       this.#designer.removeSection(this.currentSection)
+      this.currentSection = _.first(this.sections) || null;
   }
 
   onSectionSelect(currentSection: Section) {
@@ -169,6 +187,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
 
             event.target.setAttribute('data-x', event.dx);
             event.target.setAttribute('data-y', event.dy);
+            this.startedDragging = true;
             //this.#events.pushMoveFormItemEvent ('start',  event);
           },
           // call this function on every dragmove event
@@ -186,6 +205,7 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
             event.target.setAttribute('data-x', 0);
             event.target.setAttribute('data-y', 0);
             //this.#events.pushMoveFormItemEvent ('end',  event);
+            this.startedDragging = false;
 
           }
         }

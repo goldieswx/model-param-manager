@@ -60,15 +60,16 @@ export class FormManagerService {
         if (_.isNumber(value)) {
           return 'number';
         }
+        if (! Number.isNaN ((new Date(value)).getTime())) {
+          return 'date';
+        }
         if (_.isString(value)) {
           return 'string';
         }
         if (_.isBoolean(value)) {
           return 'boolean';
         }
-        if (! Number.isNaN ((new Date(value)).getTime())) {
-           return 'date';
-        }
+
         if (_.isArray(value)) {
           return 'string-array';
         }
