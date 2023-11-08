@@ -29,6 +29,7 @@
 
   <ibm-dropdown *ngIf="!formItem.toolType"
     [label]="'Display'"
+                [ngModel]="formItem.value"
    [placeholder]="availableDisplays | dropdownDisplay : formItem.display"
     [size]="'sm'" (selected)="setDisplay($event)">
     <ibm-dropdown-list [items]="availableDisplays"></ibm-dropdown-list>

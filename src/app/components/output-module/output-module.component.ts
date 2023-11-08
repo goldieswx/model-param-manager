@@ -95,4 +95,12 @@ export class OutputModuleComponent implements OnChanges{
 
       return this.httpActions[index]?.key;
   }
+
+  useProvidedStorage(module: OutputModule) {
+      module.useCustomStorage = false;
+  }
+
+  useCustomStorage(module: OutputModule) {
+      module.useCustomStorage = true;
+  }
 }

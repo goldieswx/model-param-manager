@@ -29,6 +29,7 @@ export class ProjectsManagerComponent implements  OnDestroy {
         this.sub.add(
           activeRoute.params.subscribe((params )=> {
             this.currentProject = _.find(this.projects, { projectId : params['projectId'] } );
+            this.#projects.setCurrentProject(this.currentProject);
           })
         );
     });

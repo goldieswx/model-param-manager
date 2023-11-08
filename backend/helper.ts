@@ -72,12 +72,12 @@ export const updateProject : (projectId: string, contents: any) => Promise<any> 
 
 
 
-export const getStorage : (key: string) => Promise<any> = (key: string) => {
+export const getStorage : (project: string, key: string) => Promise<any> = (project: string, key: string) => {
 
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return readFile(`./${paths.storage}/` + key + '.json').then((fileBuffer : any) => {
+  return readFile(`./${paths.storage}/${project}/${key}` + '.json').then((fileBuffer : any) => {
     return  JSON.parse(fileBuffer.toString());
   }).catch((error: any) => {
     console.log('error while reading storage ' + key, error.message);
@@ -86,21 +86,23 @@ export const getStorage : (key: string) => Promise<any> = (key: string) => {
 
 }
 
-export const deleteStorage : (key: string) => Promise<any> = (key: string) =>  {
+export const deleteStorage : (project: string, key: string) => Promise<any> = (project: string, key: string) =>  {
 
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return unlink(`./${paths.storage}/` + key + '.json')
+  return unlink(`./${paths.storage}/${project}/${key}` + '.json')
 
 };
 
-export const updateStorage : (key: string, contents: any) => Promise<any> = (key: string, contents: any) => {
+export const updateStorage : (project: string, key: string, contents: any) => Promise<any> = (project: string, key: string, contents: any) => {
 
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
-  return writeFile(`./${paths.storage}/` + key + '.json', JSON.stringify(contents));
+
+  fs.mkdirSync(`./${paths.storage}/${project}`, { recursive: true });
+  return writeFile(`./${paths.storage}/${project}/${key}` + '.json', JSON.stringify(contents));
 
 };
 

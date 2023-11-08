@@ -20,13 +20,17 @@ import * as _ from 'lodash';
 import {HttpClient} from "@angular/common/http";
 import {FormItem} from "./form-manager.service";
 import {NotificationService} from "./notification.service";
+import {InitializationService} from "./initialization.service";
+import {ProjectsManagerService} from "./projects-manager.service";
 
 export interface OutputModule {
       name: string;
       retrieveHttpAction ?: 'post' | 'put' | 'get' | string;
       retrieveUri ?: string;
       persistUri ?: string;
+      persistBuiltInStorageKey ?: string;
       persistHttpAction ?: 'post' | 'put' | 'get' | string;
+      useCustomStorage ?: boolean;
 }
 
 export interface OutputProcessedData {
@@ -45,6 +49,8 @@ export class OutputModuleService {
 
   #designer = inject(DesignerService);
   #notify = inject(NotificationService);
+  #init = inject(InitializationService);
+  #project = inject(ProjectsManagerService);
 
   constructor(private http: HttpClient) {
 
@@ -109,7 +115,13 @@ export class OutputModuleService {
               });
           });
 
-          this.http.post(module.persistUri, result).pipe(
+          let persistUri = module.persistUri;
+          if (!module.useCustomStorage) {
+            const prefix = this.#project.getCurrentProject()?.projectId || 'unknown';
+            persistUri =  this.#init.getConfig().backendUrl + '/storage/' +  prefix + '/' + module.persistBuiltInStorageKey;
+          }
+
+          this.http.post(persistUri, result).pipe(
                 catchError((err) => {
                   this.#notify.notify({ title: 'Error Saving Configuration', message: err.message, type: 'error' })
                   return throwError(() => err);
@@ -149,8 +161,14 @@ export class OutputModuleService {
 
   public readFromOutputModuleData(module: OutputModule) {
 
+        let retrieveUri = module.retrieveUri;
+        if (!module.useCustomStorage) {
+          const prefix = this.#project.getCurrentProject()?.projectId || 'unknown';
+          retrieveUri =  this.#init.getConfig().backendUrl + '/storage/' + prefix + '/' + module.persistBuiltInStorageKey;
+        }
 
-        this.http.get(module.retrieveUri).pipe(
+
+        this.http.get(retrieveUri).pipe(
                   catchError((err) => {
                         this.#notify.notify({ title: 'Error Reading configuration', message: err.message, type: 'error' })
                         return throwError(() => err);

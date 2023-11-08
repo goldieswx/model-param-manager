@@ -29,7 +29,7 @@ export class ProjectsManagerService {
 
   #init = inject(InitializationService);
   private backendUrl =  this.#init.getConfig()?.backendUrl;
-
+  private currentProject: ConfigProject;
 
   constructor(private http : HttpClient) {
   }
@@ -51,4 +51,13 @@ export class ProjectsManagerService {
     return this.http.delete(this.backendUrl + '/project/' + project.projectId );
 
   }
+
+  public setCurrentProject(currentProject: ConfigProject) {
+    this.currentProject = currentProject;
+  }
+
+  public getCurrentProject(): ConfigProject {
+     return this.currentProject;
+  }
+
 }

@@ -74,6 +74,8 @@ export class DesignerComponent  implements  AfterViewInit, OnDestroy {
                       sections: this.sections
               }
 
+              this.#projects.setCurrentProject(this.currentProject);
+
               this.#outputModules.setModules(this.outputModules);
               this.#configFiles.setFiles(this.configurationFiles);
               this.#designer.setSections(this.sections);

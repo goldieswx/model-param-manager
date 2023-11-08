@@ -79,10 +79,10 @@ app.delete('/project/:projectId', function (req: Request, res: Response) {
 
 
 
-app.get('/storage/:key', function (req: Request, res: Response) {
+app.get('/storage/:project/:key', function (req: Request, res: Response) {
 
   if (req.params?.key) {
-    helper.getStorage(req.params.key).then((project) => {
+    helper.getStorage(req.params.project, req.params.key).then((project) => {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(project));
     },() => {
@@ -96,11 +96,11 @@ app.get('/storage/:key', function (req: Request, res: Response) {
 
 });
 
-app.post('/storage/:key', function (req: Request, res: Response) {
+app.post('/storage/:project/:key', function (req: Request, res: Response) {
 
   const contents = req.body;
 
-  helper.updateStorage(req.params?.key, contents).then(() => {
+  helper.updateStorage(req.params.project, req.params?.key, contents).then(() => {
     res.setHeader('Content-Type', 'application/json');
     res.send('{ "result": "success" }')
   }, () => {
@@ -110,9 +110,9 @@ app.post('/storage/:key', function (req: Request, res: Response) {
 
 });
 
-app.delete('/storage/:key', function (req: Request, res: Response) {
+app.delete('/storage/:project/:key', function (req: Request, res: Response) {
 
-  helper.deleteStorage(req.params?.key).then(() => {
+  helper.deleteStorage(req.params.project, req.params?.key).then(() => {
     res.setHeader('Content-Type', 'application/json');
     res.send('{ "result": "success" }')
   }, () => {

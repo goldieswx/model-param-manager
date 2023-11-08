@@ -7,21 +7,27 @@
       </ibm-label>
     </div>
 
-    <div class="config-uri-edit" *ngIf="validated">
-      <ibm-label>
-        Send Url
-        <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.persistUri" (ngModelChange)="update()" placeholder="http://" >
-      </ibm-label>
-    </div>
-
-
-
-    <div class="http-action"
-         *ngIf="validated"
-         (click)="module.retrieveHttpAction = cycleAction(module.persistHttpAction)">
-        {{ httpActions | dropdownDisplay : module.persistHttpAction }}
-    </div>
-
+    <ng-container *ngIf="module.useCustomStorage && validated">
+      <div class="config-uri-edit">
+        <ibm-label>
+          Send Url
+          <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.persistUri" (ngModelChange)="update()" placeholder="http://" >
+        </ibm-label>
+      </div>
+      <div class="http-action"
+           *ngIf="validated"
+           (click)="module.retrieveHttpAction = cycleAction(module.persistHttpAction)">
+          {{ httpActions | dropdownDisplay : module.persistHttpAction }}
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!module.useCustomStorage && validated">
+      <div class="config-uri-edit">
+        <ibm-label>
+           Built-in Persist Key
+          <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.persistBuiltInStorageKey" (ngModelChange)="update()" >
+        </ibm-label>
+      </div>
+    </ng-container>
 
 
     <div class="fetch-button" *ngIf="validated">
@@ -31,7 +37,11 @@
         [placement]="'bottom'"
         [flip]="false" >
         <ibm-overflow-menu-option (click)="send(module)" >Send</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option (click)="read(module)" >Get</ibm-overflow-menu-option>
         <ibm-overflow-menu-option [innerClass]="'bx--menu-option--danger'" [disabled]="module.name === 'default'" (click)="delete(module)">Delete</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option (click)="useProvidedStorage(module)" *ngIf="module.useCustomStorage">Built-in Endpoints</ibm-overflow-menu-option>
+        <ibm-overflow-menu-option (click)="useCustomStorage(module)" *ngIf="!module.useCustomStorage">Custom Endpoints</ibm-overflow-menu-option>
+
       </ibm-overflow-menu>
 
     </div>
@@ -45,26 +55,23 @@
   <div style="display: flex; flex-direction: row; margin-top: .5rem;" *ngIf="validated">
 
     <div class="spacer machine-name"></div>
-    <div class="config-uri-edit" >
-      <ibm-label>
-        Retreive Url
-        <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.retrieveUri" (ngModelChange)="update()" placeholder="http://" >
-      </ibm-label>
-    </div>
 
-    <div class="http-action"
-         *ngIf="validated"
-         (click)="module.retrieveHttpAction = cycleAction(module.retrieveHttpAction)">
-      {{ httpActions | dropdownDisplay : module.retrieveHttpAction }}
-    </div>
+    <ng-container *ngIf="module.useCustomStorage">
+      <div class="config-uri-edit" >
+        <ibm-label>
+          Retreive Url
+          <input [disabled]="!validName" ibmText size="sm" [(ngModel)]="module.retrieveUri" (ngModelChange)="update()" placeholder="http://" >
+        </ibm-label>
+      </div>
 
-    <ibm-overflow-menu
-      [placement]="'bottom'"
-      [flip]="false" >
-      <ibm-overflow-menu-option (click)="read(module)" >Get</ibm-overflow-menu-option>
-    </ibm-overflow-menu>
+      <div class="http-action"
+           *ngIf="validated"
+           (click)="module.retrieveHttpAction = cycleAction(module.retrieveHttpAction)">
+        {{ httpActions | dropdownDisplay : module.retrieveHttpAction }}
+      </div>
+    </ng-container>
+
+
   </div>
-
-
 
 </div>
