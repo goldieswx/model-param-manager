@@ -9,6 +9,14 @@
       }
    }
 
+  ul > li:last-child button {
+    border-radius: 0 0 5px 5px;
+  }
+
+  ul > li:first-child button {
+    border-radius: 5px 5px 0 0;
+  }
+
 
 
 }

@@ -95,14 +95,24 @@ export const deleteStorage : (project: string, key: string) => Promise<any> = (p
 
 };
 
-export const updateStorage : (project: string, key: string, contents: any) => Promise<any> = (project: string, key: string, contents: any) => {
+export const updateStorage : (project: string, key: string, contents: any, override: boolean) => Promise<any> = (project: string, key: string, contents: any, override: boolean) => {
 
   if (key.endsWith('.json')) {
     key = key.slice(0, - ('.json'.length));
   }
 
-  fs.mkdirSync(`./${paths.storage}/${project}`, { recursive: true });
-  return writeFile(`./${paths.storage}/${project}/${key}` + '.json', JSON.stringify(contents));
+  const dirPath = `./${paths.storage}/${project}`;
+  const filePath = `${dirPath}/${key}` + '.json';
+
+  if (!override) {
+      if (fs.existsSync(filePath)) {
+         console.log(filePath + ' Ignoring file due no-override and existing file.')
+         return Promise.resolve(true);
+      }
+  }
+
+  fs.mkdirSync(dirPath, { recursive: true });
+  return writeFile(filePath , JSON.stringify(contents));
 
 };
 

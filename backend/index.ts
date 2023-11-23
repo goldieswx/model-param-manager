@@ -65,6 +65,7 @@ app.post('/project/:projectId', function (req: Request, res: Response) {
 
 });
 
+
 app.delete('/project/:projectId', function (req: Request, res: Response) {
 
   helper.deleteProject(req.params?.projectId).then(() => {
@@ -100,7 +101,11 @@ app.post('/storage/:project/:key', function (req: Request, res: Response) {
 
   const contents = req.body;
 
-  helper.updateStorage(req.params.project, req.params?.key, contents).then(() => {
+  console.log('posting storage req.query' , req.query);
+
+  const override = req.query?.override !== 'no'; // override by default
+
+  helper.updateStorage(req.params.project, req.params?.key, contents, override).then(() => {
     res.setHeader('Content-Type', 'application/json');
     res.send('{ "result": "success" }')
   }, () => {
