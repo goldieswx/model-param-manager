@@ -2,5 +2,5 @@
 
   "reloadConfigurationFiles": true,
   "readOnly": false,
-  "backendUrl": "http://localhost:3000"
+  "backendUrl": "http://sandbox:3000"
 }

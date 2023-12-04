@@ -80,8 +80,6 @@ export class JsonviewComponent implements  AfterViewInit, OnChanges, OnDestroy {
           }
         }
       });
-
-
   }
 
   private _dragMoveListener (event: any) {

@@ -1,11 +1,29 @@
 import fs from 'fs';
+import { chain as loDashChain } from 'lodash';
+
+
+
 
 export const paths = {
    storage: 'storage',
-   projects: 'projects'
+   projects: 'projects',
+   resources: 'resources'
 }
 
 const {promises: {readFile, writeFile, unlink}} = require("fs");
+
+export interface ResourceFile {
+   filename: string;
+   size: number;
+   modified: Date | string;
+}
+
+export interface FileContents {
+   filename: string;
+   contents : string;
+
+}
+
 
 export const getDirFiles = (path: string) => {
 
@@ -48,7 +66,7 @@ export const getProject : (projectId: string) => Promise<ConfigProject> = (proje
       }).catch((error: any) => {
           console.log('error while reading project ' + projectId, error.message);
           throw new Error(error.message);
-      })
+      }) as Promise<ConfigProject>
 
 }
 
@@ -116,5 +134,95 @@ export const updateStorage : (project: string, key: string, contents: any, overr
 
 };
 
+export const afterFileUpload: (projectId: string, key: string, files: any[]) => void = (projectId: string, key: string, files: any[]) => {
+
+  /*{
+    fieldname: 'file',
+      originalname: 'Screenshot_20231125_103238.png',
+    encoding: '7bit',
+    mimetype: 'image/png',
+    destination: '/tmp/uploads',
+    filename: 'f08b6c60b160a13c14f8bf053f83cdfc',
+    path: '/tmp/uploads/f08b6c60b160a13c14f8bf053f83cdfc',
+    size: 8815
+  }*/
+
+  files.map((f: any) => {
+       fs.copyFileSync(f.destination + '/' + f.filename, `./${paths.resources}/${projectId}/${key}/${f.originalname}`);
+       fs.unlinkSync(f.destination + '/' + f.filename);
+  });
+
+}
 
 
+export const  updateFile : (project: string, key: string, body: FileContents) => void = (project: string, key: string, body: FileContents) => {
+
+      if (!body.filename.includes('/')) {
+          if (fs.existsSync(`./${paths.resources}/${project}/${key}/${body.filename}`)) {
+              fs.writeFileSync(`./${paths.resources}/${project}/${key}/${body.filename}`, body.contents);
+          }
+      }
+
+}
+
+
+export const deleteFiles : (project: string, key: string, body: any) => void = (project: string, key: string, body: any) =>  {
+
+   const filenames = body as string[] || [];
+
+    filenames.map(f => {
+      if (!f.includes('/')) {
+        fs.unlinkSync(`./${paths.resources}/${project}/${key}/${f}`);
+      } else {
+        console.log(`deleteFiles, ignored file containing invalid characters: (${f})`);
+      }
+    });
+};
+
+export const renameFiles : (project: string, key: string, body: any) => void = (project: string, key: string, body: any) =>  {
+
+  const filenames = body as {src: string, dest: string}[] || [];
+
+  filenames.map(f => {
+    if ((!f.src.includes('/')) && (!f.dest.includes('/'))) {
+      fs.renameSync(`./${paths.resources}/${project}/${key}/${f.src}`, `./${paths.resources}/${project}/${key}/${f.dest}`);
+    } else {
+      console.log(`renameFile, ignored file containing invalid characters: (${f})`);
+    }
+  });
+
+};
+
+
+
+export const getResourceKeys : (project: string) => Promise<string[]> = (project: string) => {
+
+  return getDirFiles(`./${paths.resources}/${project}`).then((files: string[]) => {
+
+      return files.filter((file) =>  (fs.lstatSync(`./${paths.resources}/${project}/${file}`).isDirectory()));
+
+  }).catch((error: any) => {
+    console.log('error while reading resources for ' + project, error.message);
+    throw new Error(error.message);
+  }) as Promise<string[]>;
+
+}
+
+export const getResourceFiles : (project: string, resourceKey: string) => Promise<ResourceFile[]> = (project: string, resourceKey: string) => {
+
+  return getDirFiles(`./${paths.resources}/${project}/${resourceKey}`).then((incomingFiles: string[]) =>
+                                   loDashChain(incomingFiles)
+                                    .map(file => ({ f: file, s: fs.lstatSync(`./${paths.resources}/${project}/${resourceKey}/${file}`) }))
+                                    .filter((fObj) => fObj.s.isFile())
+                                    .map(fObj => ({
+                                            filename: fObj.f,
+                                            size: fObj.s.size,
+                                            modified: fObj.s.ctime.toISOString()
+                                      }))
+                                    .value()
+  ).catch((error: any) => {
+    console.log('error while reading resources for ' + project, error.message);
+    throw new Error(error.message);
+  }) as Promise<ResourceFile[]>;
+
+}

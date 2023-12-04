@@ -18,6 +18,7 @@
     <div style="display: flex">
       <h4 style="flex: 1;">Manage project</h4>
       <div *ngIf="currentProject">
+        <button ibmButton="secondary" *ngIf="!currentProject?._unsaved && !currentProject?._invalid" [size]="'sm'" (click)="manageResourcesCurrentProject()">Resources</button>
         <button ibmButton="secondary" *ngIf="!currentProject?._unsaved && !currentProject?._invalid" [size]="'sm'" (click)="editCurrentProject()">Edit</button>
         <button *ngIf="!readOnlyInterface" ibmButton="danger" [size]="'sm'" (click)="deleteCurrentProject()" >Delete</button>
         <button *ngIf="!readOnlyInterface && !currentProject?._invalid" [size]="'sm'" ibmButton="primary"  (click)="saveCurrentProject()">Save</button>

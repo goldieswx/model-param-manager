@@ -4,7 +4,7 @@
   "license": "(CC BY-SA 4.0)",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -24,6 +24,7 @@
     "carbon-components-angular": "^4.73.2",
     "codemirror": "^5.65.13",
     "dropzone": "^6.0.0-beta.2",
+    "human-format": "^1.2.0",
     "interactjs": "^1.10.17",
     "json-lint": "^0.1.0",
     "lodash": "^4.17.21",

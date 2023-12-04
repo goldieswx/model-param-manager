@@ -16,6 +16,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {ProjectsManagerComponent} from "./components/projects-manager/projects-manager.component";
 import {DesignerComponent} from "./components/designer/designer.component";
+import {ResourceComponent} from "./components/resource/resource.component";
 
 const routes: Routes = [
   { path: '', redirectTo: 'projects', pathMatch: 'full' },
@@ -24,7 +25,12 @@ const routes: Routes = [
   { path: 'projects/:projectId',
     component: ProjectsManagerComponent },
   { path: 'designer/:projectId',
-    component: DesignerComponent }
+    component: DesignerComponent },
+  { path: 'resources/:projectId',
+    component: ResourceComponent },
+  { path: 'resources/:projectId/:linkId',
+    component: ResourceComponent }
+
 
 ];
 

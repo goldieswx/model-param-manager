@@ -138,17 +138,39 @@ export class OutputModuleService {
           };
   }
 
-  private _keysDeep(obj: any, keys : string[], parentKey : string = '') {
+  private _keysDeep(obj: any) : string [] {
 
-       _.forOwn(obj,(v,k) => {
-            if (_.isObjectLike(v)) {
-               this._keysDeep(v, keys, k);
-            } else {
-               keys.push(_.compact([parentKey, k]).join('.'));
-            }
-       });
+    const getKeys = (obj : any, acc: string[][], parentPath: string[]) => {
+
+        if (_.isObject(obj)) {
+
+          const kvs: any[] = _.zip(_.keys(obj),_.values(obj));
+
+           _.each(kvs, (kv: any[]) => {
+               const k : string = kv[0];
+               const v : any = kv[1];
+               if (!_.isObject(v)) {
+                  acc.push([ ...parentPath, k]);
+               } else {
+                  getKeys(v, acc, [...parentPath,k]);
+               }
+           });
+
+        } else {
+           acc.push([ ... parentPath ]);
+        }
+
+    };
+
+    const acc: any[] = []
+    getKeys(obj, acc, []);
+
+    return _.map(acc, (k) => k.join('.'));
 
   }
+
+
+
 
   public sendAllOutputModules() {
        this._outputModules.map(m => this.getOutputModuleData(m));
@@ -174,8 +196,7 @@ export class OutputModuleService {
                         return throwError(() => err);
                   })
                 ).subscribe((data) => {
-              const allKeys : string[] = [];
-              this._keysDeep(data, allKeys);
+              const allKeys : string[] = this._keysDeep(data);
 
               const sections : Section[]= this.#designer.getSections();
 
@@ -186,6 +207,7 @@ export class OutputModuleService {
                       if (formItem.key) {
                         if (_.indexOf(allKeys,formItem.key) >= 0) {
                             formItem.value = _.get(data, formItem.key);
+                            console.log('loaded value for', formItem.key, " := ",  formItem.value);
                         } else {
                              console.log('ignoring key', formItem.key);
                         }

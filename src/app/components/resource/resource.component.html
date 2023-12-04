@@ -1,0 +1,65 @@
+<div class="main">
+  <div class="folders">
+    <ul data-accordion class="bx--accordion sidebar" [ngClass]="['componentMode-' + componentMode]" >
+      <li data-accordion-item class="bx--accordion__item" *ngFor="let link of resourceLinks;"
+          [ngClass]="{ current: link && (link === currentLink) }">
+        <button class="bx--accordion__heading" aria-expanded="false"
+                [disabled]="componentMode === 'editor'"
+                [routerLink]="[ '/resources', projectId, link]">
+          <div class="bx--accordion__title"><i class="far fa-folder"></i> &nbsp; {{ link }}</div>
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="files" *ngIf="currentLink && currentLink.length">
+      <div style="width: 100%; display: flex; flex-direction: row">
+
+        <button [ibmButton]="(componentMode === 'file-manager')?'primary':'secondary'" size="sm" (click)="componentMode='file-manager'" >File Manager</button>
+        <button [ibmButton]="(componentMode === 'editor')?'primary':'secondary'" size="sm" *ngIf="componentMode==='editor'" >Editor</button>
+
+        <div style="flex-grow: 1"></div>
+        <button [ibmButton]="'danger'" size="sm" [disabled]="!selectCount" (click)="deleteSelectedFiles()"  *ngIf="componentMode==='file-manager'" >Delete</button>
+        <button [ibmButton]="'primary'" size="sm" (click)="saveEditedFile()"  *ngIf="componentMode==='editor'" >Save</button>
+
+      </div>
+
+      <div *ngIf="componentMode === 'file-manager'" (drop)="filesDropped($event)" (dragover)="filesDragOver($event)">
+          <table class="bx--data-table bx--data-table--compact" *ngIf="resourceLinks && resourceLinks.length" >
+              <thead>
+                  <tr><th></th><th>Filename</th><th>Size</th><th>Date Mod.</th></tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let file of files;" [ngClass]="{ selected: file.selected}">
+                      <td>
+                             <div class="checkbox">
+                               <i class="fas" [ngClass]="{ 'fa-square': !file.selected, 'fa-square-check': file.selected }" (click)="toggleSelect(file)"></i>
+                             </div>
+                      </td>
+                      <td><a (click)="editFile(file)">{{file.data.filename}}</a></td>
+                      <td>{{file.humanSize}}</td>
+                      <td>{{file.humanDate}}</td>
+                  </tr>
+              </tbody>
+          </table>
+          <div class="dropzone" >Drag & Drop file(s) here.</div>
+      </div>
+
+      <div *ngIf="componentMode === 'editor'">
+          <app-text-editor  #appTextEditor [filename]="currentFilenames"></app-text-editor>
+      </div>
+
+    </div>
+</div>
+
+<div class="bx--loading-overlay" *ngIf="uploading">
+  <div data-loading class="bx--loading">
+    <svg class="bx--loading__svg" viewBox="-75 -75 150 150">
+      <title>Uploading Files </title>
+
+      <circle class="bx--loading__stroke" cx="0" cy="0" r="37.5" />
+    </svg>
+
+  </div>
+  <div>Uploading ... <span>{{uploadingPercent}}%</span></div>
+</div>
+

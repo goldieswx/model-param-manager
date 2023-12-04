@@ -46,6 +46,8 @@ import { ToTextPipe } from './components/designer/form-element/to-text.pipe';
 import { DropdownDisplayPipe } from './pipes/dropdown-display.pipe';
 import { ToDatePipe } from './components/designer/form-element/to-date.pipe';
 import { NotificationComponent } from './components/notification/notification.component';
+import { ResourceComponent } from './components/resource/resource.component';
+import { TextEditorComponent } from './components/resource/text-editor/text-editor.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,9 @@ import { NotificationComponent } from './components/notification/notification.co
     ToTextPipe,
     DropdownDisplayPipe,
     ToDatePipe,
-    NotificationComponent
+    NotificationComponent,
+    ResourceComponent,
+    TextEditorComponent
   ],
     imports: [
         BrowserModule,

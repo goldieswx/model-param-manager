@@ -48,6 +48,11 @@ export class ProjectsManagerComponent implements  OnDestroy {
         this.router.navigate(['designer', this.currentProject.projectId ]);
   }
 
+  manageResourcesCurrentProject() {
+        this.router.navigate(['resources', this.currentProject.projectId ])
+  }
+
+
   addEmptyProject() {
 
     this.currentProject = {

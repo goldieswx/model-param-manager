@@ -44,6 +44,15 @@ textarea {
   min-height: 10rem;
 }
 
+div.text-editor {
+
+  .CodeMirror.cm-s-default {
+    height: calc(100vh - 7rem) !important;
+    font-size:  13px;
+  }
+}
+
+
 
 /* Firefox */
 * {
