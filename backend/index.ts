@@ -8,7 +8,6 @@ import * as _ from 'lodash';
 import multer from 'multer';
 
 import {FileContents, getResourceKeys} from "./helper";
-import {error} from "@angular/compiler-cli/src/transformers/util";
 import fs from "fs";
 
 
